@@ -1,0 +1,90 @@
+<div class="main-container">
+  <div class="innercontainer">
+    <section class="booking-top">
+      <div class="step active done">
+        <div class="circle">✔</div>
+        <p>Choose concert</p>
+      </div>
+
+      <div class="line"></div>
+      <div class="step active current">
+        <div class="circle">2</div>
+        <p>Checkout</p>
+      </div>
+      <div class="line"></div>
+      <div class="step">
+        <div class="circle">3</div>
+        <p>Get Ticket</p>
+      </div>
+    </section>
+    <section class="booking-details">
+      <div class="concertleft">
+        <div class="concertimage">
+          <img
+            src="data:<%= concert.concertImage.contentType %>;base64,<%= concert.concertImage.data.toString('base64') %>"
+            alt="Concert Banner"
+          />
+        </div>
+        <h4>Get Ready for an Unforgettable Night</h4>
+      </div>
+      <div class="concertright">
+        <p>Concert: <%= concert.title %></p>
+        <p>
+          Date: <%= new Date(concert.date).toLocaleDateString("en-US", { year:
+          "numeric", month: "long", day: "numeric" }) %>
+        </p>
+        <p>Time: <%= concert.time12hr %></p>
+        <p>Venue: <%= concert.venue %></p>
+        <p>Price: ₹<%= concert.ticketPrice %></p>
+        <% if (errors.length > 0) { %>
+        <div class="error-message">
+          <% errors.forEach(function(error) { %>
+          <p><%= error %></p>
+          <% }); %>
+        </div>
+        <% } else { %>
+        <div class="ticket-counter">
+          <label>Tickets:</label>
+          <div class="counter-controls">
+            <button type="button" id="decrement">-</button>
+            <span id="ticketCount" data-max="<%= maxticketleft %>">1</span>
+            <button type="button" id="increment">+</button>
+          </div>
+          <p>Max tickets allowed: <%= maxticketleft %></p>
+        </div>
+
+        <div class="total-price">
+          <p>
+            Total Price: ₹<span
+              id="totalPrice"
+              data-price="<%= concert.ticketPrice %>"
+              ><%= concert.ticketPrice %></span
+            >
+          </p>
+        </div>
+
+        <!-- Existing form -->
+        <form id="bookingForm" action="/booking/checkout" method="POST">
+          <input type="hidden" name="concertId" value="<%= concert._id %>" />
+          <input
+            type="hidden"
+            id="ticketQuantityInput"
+            name="ticketQuantity"
+            value="1"
+          />
+          <input
+            type="hidden"
+            id="totalPriceInput"
+            name="totalPrice"
+            value="<%= concert.ticketPrice %>"
+          />
+          <input type="submit" class="book-button" value="Checkout" />
+        </form>
+
+        <!-- Dummy Payment Modal -->
+
+        <% } %>
+      </div>
+    </section>
+  </div>
+</div>

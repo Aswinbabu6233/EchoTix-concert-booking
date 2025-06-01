@@ -1,0 +1,90 @@
+<div class="main-container">
+  <div class="innercontainer">
+    <h2>EDIT CONCERT DETAILS</h2>
+    <section class="edit-data">
+      <form
+        action="/admin/edit/concerts/<%= concert._id %>"
+        class="Bandform"
+        method="POST"
+        enctype="multipart/form-data"
+      >
+        <!-- ─── Current concert image ──────────────────────────────── -->
+        <label>Current Photo</label>
+        <div class="photo-box">
+          <% if (concert.concertImage && concert.concertImage.data) { %>
+            <img
+              src="data:<%= concert.concertImage.contentType %>;base64,<%= concert.concertImage.data.toString('base64') %>"
+              alt="Current Concert Photo"
+            />
+          <% } else { %>
+            <em>No image stored.</em>
+          <% } %>
+        </div>
+
+        <!-- ─── Concert Fields ─────────────────────────────────────── -->
+        <label>Title</label>
+        <input type="text" name="title" value="<%= concert.title %>" required />
+
+        <label>Description</label>
+        <textarea name="description" rows="6" required><%= concert.description %></textarea>
+
+        <label>Date</label>
+        <input type="date" name="date" value="<%= concert.date.toISOString().split('T')[0] %>" required />
+
+        <label>Time</label>
+        <input type="time" name="time" value="<%= concert.time %>" required />
+
+        <label>Duration (minutes)</label>
+        <input type="number" name="duration" value="<%= concert.duration %>" required />
+
+        <label>City</label>
+        <input type="text" name="city" value="<%= concert.city %>" required />
+
+        <label>Venue</label>
+        <input type="text" name="venue" value="<%= concert.venue %>" required />
+
+        <label>Location Map URL (optional)</label>
+        <input type="url" name="locationMapUrl" value="<%= concert.locationMapUrl %>" />
+
+        <label>Ticket Price (₹)</label>
+        <input type="number" name="ticketPrice" value="<%= concert.ticketPrice %>" required />
+
+        <label>Total Tickets</label>
+        <input type="number" name="totalTickets" value="<%= concert.totalTickets %>" required />
+
+        <label>Tickets Available</label>
+        <input type="number" name="ticketsAvailable" value="<%= concert.ticketsAvailable %>" required />
+
+        <label>Booking Ends At</label>
+        <input type="datetime-local" name="bookingEndsAt" value="<%= concert.bookingEndsAt ? new Date(concert.bookingEndsAt).toISOString().slice(0,16) : '' %>" />
+
+        <!-- ─── Band Selector ───────────────────────────────────── -->
+        <label>Band</label>
+        <select name="band" required>
+          <% bands.forEach(b => { %>
+            <option value="<%= b._id %>" <%= concert.band && concert.band._id.equals(b._id) ? "selected" : "" %>><%= b.name %></option>
+          <% }) %>
+        </select>
+
+        <!-- ─── Tags ─────────────────────────────────────────────── -->
+        <label>Tags (comma-separated)</label>
+        <input type="text" name="tags" value="<%= concert.tags.join(', ') %>" />
+
+        <!-- ─── Status ───────────────────────────────────────────── -->
+        <label>Status</label>
+        <select name="status" required>
+          <option value="upcoming" <%= concert.status === 'upcoming' ? 'selected' : '' %>>Upcoming</option>
+          <option value="past" <%= concert.status === 'past' ? 'selected' : '' %>>past</option>
+          <option value="canceled" <%= concert.status === 'canceled' ? 'selected' : '' %>>Canceled</option>
+        </select>
+
+        <!-- ─── Upload new image ─────────────────────────────────── -->
+        <label>Change Photo (optional)</label>
+        <input type="file" name="photo" accept="image/*" />
+
+        <!-- ─── Submit ───────────────────────────────────────────── -->
+        <button type="submit">Update Concert</button>
+      </form>
+    </section>
+  </div>
+</div>

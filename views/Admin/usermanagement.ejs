@@ -1,0 +1,55 @@
+<div class="main-container">
+  <div class="innercontainer">
+    <section class="Manage-top">
+      <h1>User Management</h1>
+      <a href="/admin/approve/reviews">Approve Review</a>
+    </section>
+    <section class="recentmanagements">
+      <div class="managementstable">
+        <table>
+          <thead>
+            <tr>
+              <th>Profile Pic</th>
+              <th>Username</th>
+              <th>Email</th>
+              <th>Edit</th>
+              <th>Delete</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% users.forEach(function(show) { %>
+            <tr>
+              <td>
+                <% if (show.profileImage && show.profileImage.data &&
+                show.profileImage.contentType) { %>
+                <img
+                  src="data:<%= show.profileImage.contentType %>;base64,<%= show.profileImage.data.toString('base64') %>"
+                />
+                <% } else { %>
+                <img
+                  class="profile-avatar"
+                  src="/images/default-profile.jpg"
+                  alt="Default avatar"
+                />
+                <% } %>
+              </td>
+              <td><%= show.username %></td>
+              <td><%= show.email %></td>
+              <td>
+                <a class="edit" href="/admin/edit/band/<%= show._id %>"
+                  ><i class="fa-solid fa-file-pen"></i
+                ></a>
+              </td>
+              <td>
+                <a class="delete" href="/admin/band/delete/<%= show._id %>"
+                  ><i class="fa-solid fa-trash"></i
+                ></a>
+              </td>
+            </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+</div>

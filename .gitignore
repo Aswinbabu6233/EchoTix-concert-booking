@@ -1,0 +1,11 @@
+# Node modules
+node_modules/
+
+# Environment variables
+.env
+
+# Ignore images
+/public/images/
+
+# Ignore specific db file
+/database/db.js

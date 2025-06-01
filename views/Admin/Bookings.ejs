@@ -1,0 +1,36 @@
+<div class="main-container">
+  <div class="innercontainer">
+    <section class="Manage-top">
+      <h1>Booking Details</h1>
+      <h4>Total Revenue: ₹ <span><%=revenue%></span></h4>
+    </section>
+    <section class="recentmanagements">
+      <div class="managementstable">
+        <table>
+          <thead>
+            <tr>
+              <th>user</th>
+              <th>concert</th>
+              <th>ticket quantity</th>
+              <th>total price</th>
+              <th>status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% bookings.forEach(function(booking) { %>
+            <tr>
+              <td><%= booking.user.username%></td>
+              <td><%= booking.concert.title %></td>
+              <td><%=booking.ticketQuantity%></td>
+              <td><%=booking.totalPrice%></td>
+              <td>
+                <!-- status dropdown and if change the status show a confirm popup msg  -->
+              </td>
+            </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+</div>

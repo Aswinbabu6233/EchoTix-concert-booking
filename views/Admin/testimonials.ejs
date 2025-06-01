@@ -1,0 +1,81 @@
+<div class="main-container">
+  <div class="innercontainer">
+    <section class="recentmanagements">
+      <!-- Success Message -->
+      <% if (typeof success_msg !== "undefined" && success_msg.length > 0) { %>
+      <% success_msg.forEach(function(msg) { %>
+      <div class="flash-message flash-success"><%= msg %></div>
+      <% }) %> <% } %>
+
+      <!-- Error Message -->
+      <% if (typeof error_msg !== "undefined" && error_msg.length > 0) { %> <%
+      error_msg.forEach(function(msg) { %>
+      <div class="flash-message flash-error"><%= msg %></div>
+      <% }) %> <% } %>
+      <div class="managementstable">
+        <table>
+          <thead>
+            <tr>
+              <th>user Img</th>
+              <th>Name</th>
+              <th>Review</th>
+              <th>Approve?</th>
+              <th>Delete</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% testimonials.forEach(function(review) { %>
+            <tr>
+              <td>
+                <% if (review.user.profileImage && review.user.profileImage.data
+                && review.user.profileImage.contentType) { %>
+                <img
+                  src="data:<%= review.user.profileImage.contentType %>;base64,<%= review.user.profileImage.data.toString('base64') %>"
+                />
+                <% } else { %>
+                <img
+                  class="profile-avatar"
+                  src="/images/default-profile.jpg"
+                  alt="Default avatar"
+                />
+                <% } %>
+              </td>
+              <td><%= review.user.username %></td>
+              <td>
+                <%= review.content.length > 100 ? review.content.substring(0,
+                100) + "..." : review.content %>
+              </td>
+
+              <td>
+                <form
+                  action="/admin/review/approve/<%= review._id %>"
+                  method="POST"
+                >
+                  <button type="submit" class="edit">
+                    <i class="fa-solid fa-check"></i>
+                  </button>
+                </form>
+              </td>
+              <td>
+                <form
+                  action="/admin/review/delete/<%= review._id %>"
+                  method="POST"
+                  style="display: inline"
+                >
+                  <button
+                    type="submit"
+                    class="delete"
+                    onclick="return confirm('Are you sure you want to delete this review?')"
+                  >
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
+                </form>
+              </td>
+            </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+</div>

@@ -1,0 +1,70 @@
+<div class="main-container">
+  <div class="innercontainer">
+    <h2>EDIT PROFILE</h2>
+    <section class="edit-data">
+      <!-- error -->
+
+      <% if (errors && errors.length> 0) { %>
+      <ul class="error-messages">
+        <% errors.forEach(function(error) { %>
+        <li><%= error.msg %></li>
+        <% }) %>
+      </ul>
+      <% } %>
+      <form
+        action="/user/edit/<%=user._id%>"
+        class="Bandform"
+        method="post"
+        enctype="multipart/form-data"
+      >
+        <label for="currentphoto">Current Photo</label>
+        <div class="photo-box">
+          <%if(user.profileImage && user.profileImage.data){%>
+          <img
+            src="data:<%= user.profileImage.contentType %>;base64,<%= user.profileImage.data.toString('base64') %>"
+            alt="Current User Photo"
+          />
+
+          <% }else{%>
+          <em>No image stored.</em>
+          <% }%>
+        </div>
+
+        <label for="name">Name</label>
+        <input
+          type="text"
+          id="name"
+          name="name"
+          value="<%=user.username%>"
+          required
+        />
+
+        <label for="email">Email</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          value="<%=user.email%>"
+          required
+        />
+
+        <label for="password">Password</label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          placeholder="Leave blank if you don't want to change it"
+        />
+        <label for="profileImage">Profile Image (optional)</label>
+        <input
+          type="file"
+          id="profileImage"
+          name="profileImage"
+          accept="image/*"
+        />
+
+        <button type="submit">Update Profile</button>
+      </form>
+    </section>
+  </div>
+</div>

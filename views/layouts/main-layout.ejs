@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EchoTix</title>
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/swiper/swiper-bundle.min.css"
+    />
+  </head>
+  <body>
+    <header>
+      <div class="headersection">
+        <!-- Logo -->
+        <div class="logo">
+          <% if (adminpresent) { %>
+          <a href="/admin/dashboard">ECHOTIX ADMIN</a>
+          <% } else { %>
+          <a href="/">ECHOTIX</a>
+          <% } %>
+        </div>
+
+        <!-- Navigation -->
+        <% if (!hidenav) { %>
+        <!-- Hamburger (mobile only) -->
+        <div class="hamburger" onclick="toggleMobileMenu()">
+          <i class="fa-solid fa-bars"></i>
+        </div>
+
+        <% if (adminpresent) { %>
+        <!-- Admin Nav -->
+        <nav class="admin-nav nav-menu">
+          <ul class="admin-links">
+            <li><a href="/admin/dashboard">Dashboard</a></li>
+            <li class="dropdown-parent">
+              <a href="#">Management <i class="fa-solid fa-caret-down"></i></a>
+              <ul class="dropdown">
+                <li><a href="/admin/bands">Bands</a></li>
+                <li><a href="/admin/concerts">Concerts</a></li>
+                <li><a href="/admin/artists">Artists</a></li>
+              </ul>
+            </li>
+            <li><a href="/admin/bookings">Bookings</a></li>
+            <li><a href="/admin/users">Users</a></li>
+            <li><a href="/admin/logout">Logout</a></li>
+          </ul>
+        </nav>
+        <% } else { %>
+        <!-- User Nav -->
+        <nav class="nav-menu">
+          <ul class="nav-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="/concert/list">Concerts</a></li>
+            <li><a href="/artists/list">Artists</a></li>
+
+            <% if (userpresent) { %>
+            <li class="dropdown-parent profile">
+              <% if (!userdetails?.profileImage?.data) { %>
+              <img
+                class="profilepic"
+                src="/images/default-profile.jpg"
+                alt="default profile"
+                onclick="toggleProfile()"
+              />
+              <% } else { %>
+              <img
+                class="profilepic"
+                src="data:<%= userdetails.profileImage.contentType %>;base64,<%= userdetails.profileImage.data.toString('base64') %>"
+                alt="profile image"
+                loading="lazy"
+                onclick="toggleProfile()"
+              />
+              <% } %>
+
+              <ul class="dropdown submenu">
+                <li>
+                  <div class="userinfo">
+                    <% if (userdetails?.profileImage?.data) { %>
+                    <img
+                      src="data:<%= userdetails.profileImage.contentType %>;base64,<%= userdetails.profileImage.data.toString('base64') %>"
+                      alt="profile"
+                    />
+                    <% } else { %>
+                    <img src="/images/default-profile.jpg" alt="default" />
+                    <% } %>
+                    <h4><%= userdetails?.username || 'User' %></h4>
+                  </div>
+                  <hr />
+                </li>
+                <li>
+                  <a href="/user/profile" class="submenu-link">
+                    <i class="fas fa-user"></i>
+                    <p>My Profile</p>
+                  </a>
+                </li>
+                <li>
+                  <a href="/user/tickets" class="submenu-link">
+                    <i class="fa-solid fa-ticket"></i>
+                    <p>My Tickets</p>
+                  </a>
+                </li>
+                <li>
+                  <a href="/user/logout" class="submenu-link">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <p>Logout</p>
+                  </a>
+                </li>
+              </ul>
+            </li>
+            <% } else { %>
+            <li>
+              <div class="header-right">
+                <a href="/user/login"
+                  ><i class="fa-regular fa-user"></i> Login/Register</a
+                >
+              </div>
+            </li>
+            <% } %>
+          </ul>
+        </nav>
+
+        <% } %> <% } %>
+      </div>
+    </header>
+
+    <%- body %>
+
+    <script src="/javascripts/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="/javascripts/sweetalert.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script>
+      const swiper = new Swiper(".swiper", {
+        loop: true,
+        spaceBetween: 20,
+        autoplay: {
+          delay: 3000, // Time between slides (in ms)
+          disableOnInteraction: false, // Keeps autoplay running after manual swipes (if enabled)
+        },
+        breakpoints: {
+          640: {
+            slidesPerView: 1,
+            spaceBetween: 10,
+          },
+          768: {
+            slidesPerView: 2,
+          },
+          1024: {
+            slidesPerView: 3,
+          },
+        },
+      });
+    </script>
+  </body>
+</html>

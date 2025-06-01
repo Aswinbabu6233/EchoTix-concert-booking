@@ -1,0 +1,45 @@
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+  const options = {
+    key: "<%= razorpayKey %>",
+    amount: "<%= order.amount %>", // amount in paise (number)
+    currency: "INR",
+    name: "<%= concert.title %>",
+    description: "Ticket Booking",
+    image: "/images/EchoTix.png",
+    order_id: "<%= order.id %>",
+    handler: function (response) {
+      fetch("/booking/confirm", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          razorpayPaymentId: response.razorpay_payment_id,
+          razorpayOrderId: response.razorpay_order_id,
+          concertId: "<%= concert._id %>",
+          ticketQuantity: " <%= ticketQuantity %>",
+          totalPrice: "<%= totalPrice %>",
+        }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.success) {
+            window.location.href = "/booking/success/" + data.bookingId;
+          } else {
+            alert("Booking failed. Try again.");
+          }
+        });
+    },
+    prefill: {
+      name: "<%= concert.title %> Fan",
+      email: "aswinachu6933@gmail.com",
+    },
+    theme: {
+      color: "#F37254",
+    },
+  };
+
+  const rzp = new Razorpay(options);
+  rzp.open();
+</script>

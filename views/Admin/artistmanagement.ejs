@@ -1,0 +1,74 @@
+<div class="main-container">
+  <div class="innercontainer">
+    <section class="Manage-top">
+      <h1>Artists Management</h1>
+      <a href="/admin/create/artist" class="add-artist">Add Artist</a>
+    </section>
+    <!-- Success Message -->
+    <% if (typeof success_msg !== "undefined" && success_msg.length > 0) { %> <%
+    success_msg.forEach(function(msg) { %>
+    <div class="flash-message flash-success"><%= msg %></div>
+    <% }) %> <% } %>
+
+    <!-- Error Message -->
+    <% if (typeof error_msg !== "undefined" && error_msg.length > 0) { %> <%
+    error_msg.forEach(function(msg) { %>
+    <div class="flash-message flash-error"><%= msg %></div>
+    <% }) %> <% } %>
+    <section class="recentmanagements">
+      <div class="managementstable">
+        <table>
+          <thead>
+            <tr>
+              <th>Image</th>
+              <th>Name</th>
+              <th>Role</th>
+              <th>ABOUT</th>
+              <th>Band</th>
+              <th>Edit</th>
+              <th>Delete</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% artists.forEach(function(show) { %>
+            <tr>
+              <td>
+                <img
+                  src="data:<%= show.photo.contentType %>;base64,<%= show.photo.data.toString('base64') %>"
+                />
+              </td>
+              <td><%= show.name %></td>
+              <td><%= show.role %></td>
+              <td>
+                <%= show.description ? show.description.substring(0, 101) :
+                "N/A" %>
+              </td>
+              <td><%= show.band ? show.band.name : "N/A" %></td>
+              <td>
+                <a class="edit" href="/admin/edit/artist/<%= show._id %>"
+                  ><i class="fa-solid fa-file-pen"></i
+                ></a>
+              </td>
+              <td>
+                <form
+                  action="/admin/delete/artist/<%= show._id %>"
+                  method="POST"
+                  style="display: inline"
+                >
+                  <button
+                    type="submit"
+                    class="delete"
+                    onclick="return confirm('Are you sure you want to delete this review?')"
+                  >
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
+                </form>
+              </td>
+            </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+</div>

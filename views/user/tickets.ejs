@@ -1,0 +1,92 @@
+<div class="main-container">
+  <div class="innercontainer">
+    <h2>🎟️ Your Ticket History</h2>
+    <p>Click each section below to view ticket details.</p>
+
+    <div class="accordion-section">
+      <!-- Upcoming -->
+      <div class="accordion-item">
+        <button
+          class="accordion-header"
+          aria-expanded="false"
+          aria-controls="upcoming-tickets"
+        >
+          <span>Upcoming Tickets (<%= upcomingTickets.length %>)</span>
+          <span class="arrow" aria-hidden="true">▼</span>
+        </button>
+        <div id="upcoming-tickets" class="accordion-content">
+          <% if (upcomingTickets.length > 0) { %>
+          <div class="all-tickets">
+            <% upcomingTickets.forEach(ticket => { %> <%-
+            include("../partials/ticketCard", { ticket }) %> <% }) %>
+          </div>
+
+          <% } else { %>
+          <p>No upcoming tickets.</p>
+          <% } %>
+        </div>
+      </div>
+
+      <!-- Past -->
+      <div class="accordion-item">
+        <button
+          class="accordion-header"
+          aria-expanded="false"
+          aria-controls="past-tickets"
+        >
+          <span>Past Tickets (<%= pastTickets.length %>)</span>
+          <span class="arrow" aria-hidden="true">▼</span>
+        </button>
+        <div id="past-tickets" class="accordion-content">
+          <% if (pastTickets.length > 0) { %>
+          <div class="all-tickets">
+            <% pastTickets.forEach(ticket => { %> <%-
+            include("../partials/ticketCard", { ticket }) %> <% }) %>
+          </div>
+          <% } else { %>
+          <p>No past tickets.</p>
+          <% } %>
+        </div>
+      </div>
+
+      <!-- Cancelled -->
+      <div class="accordion-item">
+        <button
+          class="accordion-header"
+          aria-expanded="false"
+          aria-controls="cancelled-tickets"
+        >
+          <span>Cancelled Tickets (<%= cancelledTickets.length %>)</span>
+          <span class="arrow" aria-hidden="true">▼</span>
+        </button>
+        <div id="cancelled-tickets" class="accordion-content">
+          <% if (cancelledTickets.length > 0) { %>
+          <div class="all-tickets">
+            <% cancelledTickets.forEach(ticket => { %> <%-
+            include("../partials/ticketCard", { ticket }) %> <% }) %>
+          </div>
+          <% } else { %>
+          <p>No cancelled tickets.</p>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Event delegation for accordion toggle
+  document
+    .querySelector(".accordion-section")
+    .addEventListener("click", (e) => {
+      const header = e.target.closest(".accordion-header");
+      if (!header) return;
+
+      const content = header.nextElementSibling;
+      const isOpen = content.classList.toggle("open");
+
+      // Update ARIA attributes
+      header.setAttribute("aria-expanded", isOpen);
+      header.classList.toggle("active", isOpen);
+    });
+</script>

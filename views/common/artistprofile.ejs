@@ -1,0 +1,84 @@
+<div class="main-container">
+  <div class="inner-container">
+    <section class="Artist-section">
+      <div class="artist-left-section">
+        <h1><%= artist.name %></h1>
+        <p><%= artist.description %></p>
+      </div>
+      <div class="artist-right-section">
+        <div class="artist-img">
+          <img
+            src="data:<%= artist.photo.contentType %>;base64,<%= artist.photo.data.toString('base64') %>"
+          />
+        </div>
+      </div>
+    </section>
+    <div class="random-container">
+      <div class="random-left">
+        <h1><%= artist.band.name %></h1>
+        <p><%= artist.band.discription %></p>
+
+        <% if (otherMembers && otherMembers.length > 0) { %>
+
+        <h3>Other Members</h3>
+        <%}%>
+
+        <div class="main-artist-group">
+          <% if (otherMembers && otherMembers.length > 0) { %> <%
+          otherMembers.forEach(function(Members) { %>
+          <a href="/artist/<%= Members._id %>"
+            ><div class="main-artist-card">
+              <div class="artist-image">
+                <img
+                  src="data:<%= Members.photo.contentType %>;base64,<%= Members.photo.data.toString('base64') %>"
+                  alt="<%= Members.name %>"
+                />
+              </div>
+              <h5><%= Members.name %></h5>
+              <p><%= Members.role %></p>
+            </div></a
+          >
+          <% }); %> <% } %>
+        </div>
+      </div>
+
+      <div class="random-right">
+        <div class="randomband-img">
+          <img
+            src="data:<%= artist.band.image.contentType %>;base64,<%= artist.band.image.data.toString('base64') %>"
+            alt="<%= artist.band.name %>"
+          />
+        </div>
+      </div>
+    </div>
+    <div class="band-work">
+      <% if (concerts && concerts.length > 0) { %> <%
+      concerts.forEach(function(concert) { %>
+      <div class="programs">
+        <div class="work-img">
+          <img
+            src="data:<%= concert.concertImage.contentType %>;base64,<%= concert.concertImage.data.toString('base64') %>"
+            alt="<%= concert.title %>"
+          />
+        </div>
+        <div class="workdetails">
+          <h3><%= concert.title %></h3>
+          <h4><%= concert.venue %></h4>
+          <p><%= concert.description %></p>
+        </div>
+        <div class="status">
+          <h4><%= concert.status %></h4>
+          <p>
+            Date: <%= new Date(concert.date).toLocaleDateString("en-US", { year:
+            'numeric', month: 'long', day: 'numeric' }) %>
+          </p>
+        </div>
+      </div>
+      <% }); %> <% } else { %>
+      <p style="text-align: center; color: #fff">
+        No concerts available at the moment.
+      </p>
+      <% } %>
+    </div>
+  </div>
+</div>

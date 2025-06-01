@@ -1,0 +1,64 @@
+<div class="main-container">
+  <div class="innercontainer">
+    <h2>EDIT ARTIST DETAILS</h2>
+    <section class="edit-data">
+      <form
+        action="/admin/edit/artist/<%= artist._id %>"
+        class="Bandform"
+        method="POST"
+        enctype="multipart/form-data"
+      >
+        <label>Current Photo</label>
+        <div class="photo-box">
+          <% if (artist.photo && artist.photo.data) { %>
+          <img
+            src="data:<%= artist.photo.contentType %>;base64,<%= artist.photo.data.toString('base64') %>"
+            alt="Current Artist Photo"
+          />
+          <% } else { %>
+          <em>No image stored.</em>
+          <% } %>
+        </div>
+
+        <!-- ─── Name ────────────────────────────────────────────── -->
+        <label>Name</label>
+        <input type="text" name="name" value="<%= artist.name %>" required />
+
+        <!-- ─── Role ────────────────────────────────────────────── -->
+        <label>Role</label>
+        <input type="text" name="role" value="<%= artist.role %>" required />
+
+        <!-- ─── Description ─────────────────────────────────────── -->
+        <label>Description</label>
+        <textarea name="description" rows="6" required>
+<%= artist.description %></textarea
+        >
+
+        <!-- ─── Band selector ───────────────────────────────────── -->
+        <label>Band</label>
+        <select name="bandId" required>
+          <% bands.forEach(b => { %> <% if (artist.band &&
+          artist.band._id.equals(b._id)) { %>
+          <option value="<%= b._id %>" selected><%= b.name %></option>
+          <% } else { %>
+          <option value="<%= b._id %>"><%= b.name %></option>
+          <% } %> <% }) %>
+        </select>
+
+        <!-- ─── Current photo ───────────────────────────────────── -->
+
+        <!-- ─── Upload new photo + preview ──────────────────────── -->
+        <label>Change Photo (optional)</label>
+        <input type="file" name="photo" accept="image/*" />
+
+        <div id="newPhotoWrap" class="photo-box" style="display: none">
+          <label style="margin-top: 18px">New Photo Preview</label>
+          <img id="newPhotoPreview" alt="Preview" />
+        </div>
+
+        <!-- ─── Submit ───────────────────────────────────────────── -->
+        <button type="submit">Update Artist</button>
+      </form>
+    </section>
+  </div>
+</div>

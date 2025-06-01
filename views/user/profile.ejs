@@ -1,0 +1,59 @@
+<div class="main-container">
+  <div class="innercontainer">
+    <section class="profile-card">
+      <% if (success_msg.length > 0) { %>
+      <div class="flash-message flash-success"><%= success_msg[0] %></div>
+      <% } %>
+      <div class="profile-header">
+        <div class="avatar-container">
+          <% if (user.profileImage && user.profileImage.data &&
+          user.profileImage.contentType) { %>
+          <img
+            class="profile-avatar"
+            src="data:<%= user.profileImage.contentType %>;base64,<%= user.profileImage.data.toString('base64') %>"
+            alt="User avatar"
+          />
+          <% } else { %>
+          <img
+            class="profile-avatar"
+            src="/images/default-profile.jpg"
+            alt="Default avatar"
+          />
+          <% } %>
+
+          <div class="avatar-hover"></div>
+        </div>
+        <div class="profile-info">
+          <h1 class="profile-name"><%= user.username %></h1>
+          <p class="profile-email"><%= user.email %></p>
+        </div>
+      </div>
+
+      <div class="profile-actions">
+        <a href="/user/edit/profile" class="btn btn-edit">
+          <i class="fas fa-edit"></i> Edit Profile
+        </a>
+        <a href="/user/logout" class="btn btn-logout">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+      </div>
+    </section>
+
+    <section class="review-card">
+      <h2 class="section-title">Share Your Experience</h2>
+      <form action="/user/review" method="post" class="review-form">
+        <div class="form-group">
+          <textarea
+            name="review"
+            placeholder="Write your review here..."
+            class="review-input"
+            rows="5"
+          ></textarea>
+        </div>
+        <button type="submit" class="btn btn-submit">
+          <i class="fas fa-paper-plane"></i> Submit Review
+        </button>
+      </form>
+    </section>
+  </div>
+</div>

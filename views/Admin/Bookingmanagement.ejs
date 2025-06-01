@@ -1,0 +1,69 @@
+<div class="main-container">
+  <div class="innercontainer">
+    <section class="Manage-top">
+      <div>
+        <h1>Booking Details</h1>
+        <p>Total Bookings: <%=bookings.length%></p>
+        <p>Total Completed: <%=totalcompletedcount%></p>
+      </div>
+      <h4>Total Revenue: ₹ <span><%=revenue%></span></h4>
+    </section>
+    <!-- Success Message -->
+    <% if (typeof success_msg !== "undefined" && success_msg.length > 0) { %> <%
+    success_msg.forEach(function(msg) { %>
+    <div class="flash-message flash-success"><%= msg %></div>
+    <% }) %> <% } %>
+
+    <!-- Error Message -->
+    <% if (typeof error_msg !== "undefined" && error_msg.length > 0) { %> <%
+    error_msg.forEach(function(msg) { %>
+    <div class="flash-message flash-error"><%= msg %></div>
+    <% }) %> <% } %>
+    <section class="recentmanagements">
+      <div class="managementstable">
+        <table>
+          <thead>
+            <tr>
+              <th>user</th>
+              <th>concert</th>
+              <th>ticket quantity</th>
+              <th>total price</th>
+              <th>status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% bookings.forEach(function(booking) { %>
+            <tr>
+              <td><%= booking.user.username%></td>
+              <td><%= booking.concert.title %></td>
+              <td><%=booking.ticketQuantity%></td>
+              <td><%=booking.totalPrice%></td>
+
+              <td>
+                <% if (booking.status === 'completed') { %>
+                <form
+                  id="cancel-form-<%= booking._id %>"
+                  class="cancel-booking-form"
+                  action="/admin/cancel-booking/<%= booking._id %>"
+                  method="POST"
+                >
+                  <select name="newStatus" data-booking-id="<%= booking._id %>">
+                    <option selected disabled>Change status</option>
+                    <option value="cancelled_by_admin">Cancel Booking</option>
+                  </select>
+                </form>
+
+                <% } else { %>
+                <span style="color: red"
+                  ><%= booking.status.replace(/_/g, " ") %></span
+                >
+                <% } %>
+              </td>
+            </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+</div>

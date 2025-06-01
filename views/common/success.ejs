@@ -1,0 +1,94 @@
+<div class="main-container">
+  <div class="innercontainer">
+    <section class="booking-top">
+      <div class="step active done">
+        <div class="circle">✔</div>
+        <p>Choose concert</p>
+      </div>
+
+      <div class="line"></div>
+      <div class="step active done">
+        <div class="circle">✔</div>
+        <p>Checkout</p>
+      </div>
+      <div class="line"></div>
+      <div class="step active current">
+        <div class="circle">3</div>
+        <p>Get Ticket</p>
+      </div>
+    </section>
+    <% if (shared) { %>
+    <div id="sharedToast" class="shared-message">
+      <p class="success-message">
+        <i class="fa-solid fa-circle-check"></i>
+        Your ticket has been emailed successfully!
+      </p>
+    </div>
+    <% } %> <% if (success_msg.length > 0) { %>
+    <div class="flash-message flash-success"><%= success_msg[0] %></div>
+    <% } %>
+
+    <section class="success-details">
+      <div class="ticket-div">
+        <div class="concert-div">
+          <div class="concert-left">
+            <img
+              src="data:<%=booking.concert.concertImage.contentType %>;base64,<%= booking.concert.concertImage.data.toString('base64') %>"
+              alt="Concert Banner"
+            />
+          </div>
+          <div class="concert-right">
+            <h5><%=booking.concert.title%></h5>
+            <p>
+              <%= new Date(booking.concert.date).toLocaleDateString("en-US", {
+              year: "numeric", month: "long", day: "numeric" }) %>
+              <span>|</span> <%= booking.concert.time12hr %>
+            </p>
+            <p><%=booking.concert.venue%></p>
+          </div>
+        </div>
+        <div class="qrcode-div">
+          <div class="qrcode-left">
+            <h5><%=booking.concert.band.name%></h5>
+            <p>
+              <%=booking.ticketQuantity%> <% if(booking.ticketQuantity===1){%>
+              Ticket <%}else{%> Ticket(s) <% }%>
+            </p>
+            <p>₹<%=booking.totalPrice%></p>
+
+            <p>
+              <%= new Date(booking.createdAt).toLocaleDateString("en-US",{ year:
+              "numeric", month: "long", day: "numeric" }) %> <span>|</span> <%=
+              new Date(booking.createdAt).toLocaleTimeString("en-IN", { hour:
+              "2-digit", minute: "2-digit" }) %>
+            </p>
+          </div>
+          <div class="qrcode-right">
+            <img
+              src="<%= booking.qrcode %>"
+              alt="QR Code"
+              width="150"
+              height="150"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="download-share">
+        <a
+          href="/booking/download/<%= booking._id %>"
+          class="download"
+          title="Download Ticket PDF"
+        >
+          <i class="fa-solid fa-download"></i>
+        </a>
+        <a
+          href="/booking/share/<%= booking._id %>"
+          class="share"
+          title="Email Ticket to Me"
+        >
+          <i class="fa-solid fa-envelope"></i>
+        </a>
+      </div>
+    </section>
+  </div>
+</div>

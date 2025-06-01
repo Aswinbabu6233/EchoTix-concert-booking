@@ -1,0 +1,45 @@
+<div class="main-container">
+  <div class="innercontainer">
+    <h2>EDIT BAND DETAILS</h2>
+    <section class="edit-data">
+      <form action="/admin/edit/band/<%= band._id %>"
+      class="Bandform"
+          method="POST"
+          enctype="multipart/form-data">
+
+          <label>Current Photo</label>
+      <div class="photo-box">
+        <% if (band.image && band.image.data) { %>
+          <img
+            src="data:<%= band.image.contentType %>;base64,<%= band.image.data.toString('base64') %>"
+            alt="Current Band Photo">
+        <% } else { %>
+          <em>No image stored.</em>
+        <% } %>
+      </div>
+
+      <!-- ─── Name ────────────────────────────────────────────── -->
+      <label>Name</label>
+      <input type="text" name="name" value="<%= band.name %>" required>
+
+      <!-- ─── Description ─────────────────────────────────────── -->
+      <label>Description</label>
+      <textarea name="description" rows="6" required><%= band.discription %></textarea>
+
+      <!-- ─── Upload new photo + preview ──────────────────────── -->
+      <label>Change Photo (optional)</label>
+      <input type="file"
+             name="image"
+             accept="image/*"
+             >
+
+      <!-- ─── Submit ───────────────────────────────────────────── -->
+      <button type="submit">Update Band</button>
+    </form>
+  </div>
+
+  
+    </section>
+  </div>
+</div>
+

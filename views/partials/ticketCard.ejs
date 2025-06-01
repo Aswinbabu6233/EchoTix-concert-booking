@@ -1,0 +1,89 @@
+<section class="success-details">
+  <div class="ticket-div">
+    <div class="concert-div">
+      <div class="concert-left">
+        <img
+          src="data:<%= ticket.concert.concertImage.contentType %>;base64,<%= ticket.concert.concertImage.data.toString('base64') %>"
+          alt="Concert Banner"
+        />
+      </div>
+      <div class="concert-right">
+        <h5><%= ticket.concert.title %></h5>
+        <p>
+          <%= new Date(ticket.concert.date).toLocaleDateString("en-US", { year:
+          "numeric", month: "long", day: "numeric" }) %>
+          <span>|</span> <%= ticket.concert.time %>
+        </p>
+        <p><%= ticket.concert.venue %></p>
+      </div>
+    </div>
+
+    <div class="qrcode-div">
+      <div class="qrcode-left">
+        <h5><%= ticket.concert.band.name %></h5>
+        <p>
+          <%= ticket.ticketQuantity %> <%= ticket.ticketQuantity === 1 ?
+          "Ticket" : "Tickets" %>
+        </p>
+        <p>₹<%= ticket.totalPrice %></p>
+        <p>
+          <%= new Date(ticket.createdAt).toLocaleDateString("en-US", { year:
+          "numeric", month: "long", day: "numeric" }) %>
+          <span>|</span>
+          <%= new Date(ticket.createdAt).toLocaleTimeString("en-IN", { hour:
+          "2-digit", minute: "2-digit" }) %>
+        </p>
+
+        <% if(ticket.status !== "completed") { %>
+        <p class="text-danger">
+          Cancelled (<%= ticket.status.replace("_", " ") %>) <%
+          if(ticket.cancelReason) { %><br /><small
+            ><%= ticket.cancelReason %></small
+          ><% } %>
+        </p>
+        <% } %>
+      </div>
+
+      <div class="qrcode-right">
+        <img
+          src="<%= ticket.qrcode %>"
+          alt="QR Code"
+          width="150"
+          height="150"
+        />
+      </div>
+    </div>
+  </div>
+  <% if(ticket.status === "completed") { %>
+  <div class="ticket-download-cancel">
+    <div class="download-btn">
+      <a
+        href="/user/download/<%= ticket._id %>/pdf"
+        class="download"
+        title="Download Ticket PDF"
+      >
+        <i class="fa-solid fa-download"></i>
+      </a>
+    </div>
+    <div class="cancel">
+      <% if (ticket.canCancel) { %>
+      <form
+        id="cancel-form-<%= ticket._id %>"
+        action="/user/cancel/<%= ticket._id %>"
+        method="POST"
+      >
+        <button
+          type="button"
+          class="cancel-btn"
+          data-booking-id="<%= ticket._id %>"
+        >
+          Cancel Ticket
+        </button>
+      </form>
+      <% } else { %>
+      <p class="text-gray-500">Cancellation not available</p>
+      <% } %>
+    </div>
+  </div>
+  <% } %>
+</section>
