@@ -1,42 +1,112 @@
-# 🎫 EchoTix - Concert Booking Application
+# 🎫 EchoTix - Concert Booking Application (React + Node.js)
 
-EchoTix is a fully-featured online concert ticket booking platform where users can explore concerts, book tickets with integrated Razorpay payment, and receive unique ticket IDs with QR codes. Admins can manage concerts, artists, and bookings via a powerful dashboard. Built with Node.js, Express, MongoDB, and EJS, it offers a smooth experience for both users and administrators.
-
----
-
-## 📌 Features
-
-- ✅ User registration & login with JWT authentication  
-- 🎵 Browse and filter concerts by band, artist, and date  
-- 💳 Razorpay integration for secure online payments  
-- 🎟️ Book tickets (limit 3 per user per concert) with unique ticket ID & QR code  
-- 📄 PDF ticket generation and optional email delivery  
-- 🧑‍💻 Admin panel to manage bands, artists, concerts, and bookings  
-- 📊 Booking history & ticket management for users  
-- 🔒 Auth middleware for user and admin roles  
+**EchoTix** is a full-stack concert ticket booking platform that allows users to explore concerts, securely book tickets, and receive QR-coded digital tickets. It features a user-friendly interface for customers and a powerful admin dashboard for managing bands, artists, concerts, and bookings.
 
 ---
 
-## 🛠️ Technologies Used
+## 🌐 Live Demo
 
-- **Backend:** Node.js, Express.js  
-- **Frontend:** EJS, HTML, CSS, JavaScript  
-- **Database:** MongoDB (via Mongoose)  
-- **Authentication:** JWT (JSON Web Tokens)  
-- **Payments:** Razorpay  
-- **Other:**  
-  - QR code generation  
-  - PDF creation (`html-pdf-node`)  
-  - Emailing via `nodemailer` (optional)  
+👉 [https://echotix.example.com](https://echotix.example.com) _(Update with real link if hosted)_
 
 ---
 
-## 🚀 Getting Started
+## 📸 Preview
 
-Follow these steps to run the project locally.
+> _(Add screenshots or screen recordings of the UI here)_
 
-### 1. Clone the repository
+---
 
-```bash
-git clone https://github.com/Aswinbabu6233/EchoTix-concert-booking.git
-cd EchoTix-concert-booking
+## ✨ Key Features
+
+### 👤 User Features
+
+- 🔐 JWT-based Register/Login system
+- 🎵 Browse concerts by band, artist, or date
+- 📅 Detailed concert pages with artist & band info
+- 🎟️ Book up to 3 tickets per concert
+- 💳 Razorpay payment integration
+- 📄 Get tickets with unique ID, QR Code, and downloadable PDF
+- 📁 Booking history and ticket management
+
+### 🛠 Admin Features
+
+- 🧑‍💻 Secure Admin login with protected routes
+- 🎤 Create, edit, and delete bands, artists, and concerts
+- 📋 View and manage all bookings
+- ❌ Cancel concerts (auto-updates associated tickets)
+
+---
+
+## 🧑‍💻 Tech Stack
+
+| Layer            | Tech Used                                  |
+| ---------------- | ------------------------------------------ |
+| Frontend         | React.js, Redux Toolkit, React Router, CSS |
+| Backend          | Node.js, Express.js                        |
+| Database         | MongoDB with Mongoose                      |
+| Authentication   | JWT (JSON Web Tokens)                      |
+| Payments         | Razorpay                                   |
+| PDF & QR         | html-pdf-node, qrcode                      |
+| Email (Optional) | nodemailer                                 |
+
+---
+
+## 📂 Project Structure
+
+echotix/
+├── backend/
+│ ├── config/
+│ │ └── db.js
+│ ├── controllers/
+│ │ ├── adminController.js
+│ │ ├── authController.js
+│ │ ├── bookingController.js
+│ │ └── concertController.js
+│ ├── middleware/
+│ │ ├── authMiddleware.js
+│ │ └── errorMiddleware.js
+│ ├── models/
+│ │ ├── User.js
+│ │ ├── Band.js
+│ │ ├── Concert.js
+│ │ ├── Booking.js
+│ │ └── Review.js
+│ ├── routes/
+│ │ ├── adminRoutes.js
+│ │ ├── authRoutes.js
+│ │ ├── userRoutes.js
+│ │ └── concertRoutes.js
+│ ├── utils/
+│ │ ├── sendEmail.js
+│ │ └── generateQR.js
+│ └── server.js
+│
+├── frontend/
+│ ├── public/
+│ │ └── index.html
+│ ├── src/
+│ │ ├── assets/
+│ │ ├── components/
+│ │ │ ├── Navbar.jsx
+│ │ │ ├── Footer.jsx
+│ │ │ ├── BookingCard.jsx
+│ │ │ └── ConcertCard.jsx
+│ │ ├── pages/
+│ │ │ ├── Home.jsx
+│ │ │ ├── Concerts.jsx
+│ │ │ ├── Profile.jsx
+│ │ │ └── AdminDashboard.jsx
+│ │ ├── redux/
+│ │ │ ├── store.js
+│ │ │ └── slices/
+│ │ │ ├── authSlice.js
+│ │ │ ├── concertSlice.js
+│ │ │ └── bookingSlice.js
+│ │ ├── App.jsx
+│ │ ├── main.jsx
+│ │ └── index.css
+│
+├── README.md
+├── .gitignore
+├── package.json
+└── LICENSE
