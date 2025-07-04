@@ -51,42 +51,62 @@
 
 ## 📂 Project Structure
 
-EchoTix-concert-booking/
-├── Backend/                         # Node.js + Express backend
-│   ├── bin/                         # Server start script
-│   ├── database/                    # MongoDB connection config
-│   ├── Middleware/                 # Authentication & error middlewares
-│   ├── model/                       # Mongoose schemas (User, Band, Concert, etc.)
-│   ├── public/                      # Public/static files
-│   ├── routes/                      # All backend routes
-│   ├── utils/                       # QR code, PDF, email helpers
-│   ├── views/                       # EJS views (from older version)
-│   ├── .env                         # Backend environment variables
-│   ├── app.js                       # Express entry point
-│   └── package.json
+echotix/
+├── backend/
+│ ├── config/
+│ │ └── db.js
+│ ├── controllers/
+│ │ ├── adminController.js
+│ │ ├── authController.js
+│ │ ├── bookingController.js
+│ │ └── concertController.js
+│ ├── middleware/
+│ │ ├── authMiddleware.js
+│ │ └── errorMiddleware.js
+│ ├── models/
+│ │ ├── User.js
+│ │ ├── Band.js
+│ │ ├── Concert.js
+│ │ ├── Booking.js
+│ │ └── Review.js
+│ ├── routes/
+│ │ ├── adminRoutes.js
+│ │ ├── authRoutes.js
+│ │ ├── userRoutes.js
+│ │ └── concertRoutes.js
+│ ├── utils/
+│ │ ├── sendEmail.js
+│ │ └── generateQR.js
+│ ├── server.js
+│ └── .env
 │
-├── Frontend/                        # React + Redux frontend
-│   ├── public/                      # HTML & static assets
-│   ├── src/
-│   │   ├── assets/                  # Images, icons, Lottie JSON
-│   │   ├── Components/
-│   │   │   ├── concertcard/         # Concert card components
-│   │   │   ├── Loading/             # Loading animation/component
-│   │   │   ├── NavBar/              # Navigation bar
-│   │   │   └── redux/               # Redux store and slices
-│   │   ├── pages/                   # Route pages: Home, Login, Signup, etc.
-│   │   │   ├── artistlist.jsx
-│   │   │   ├── concertlist.jsx
-│   │   │   ├── homepage.jsx
-│   │   │   ├── Loginpage.jsx
-│   │   │   └── Signup.jsx
-│   │   ├── styles/                  # Plain CSS styling
-│   │   │   ├── commonstyles.css
-│   │   │   └── teststyle.css
-│   │   ├── main.jsx                 # React entry file
-│   │   └── route.jsx                # React Router config
-│   ├── .env                         # Frontend environment variables
-│   ├── package.json
-│   └── index.html
+├── frontend/
+│ ├── public/
+│ │ └── index.html
+│ ├── src/
+│ │ ├── assets/
+│ │ ├── components/
+│ │ │ ├── Navbar.jsx
+│ │ │ ├── Footer.jsx
+│ │ │ ├── BookingCard.jsx
+│ │ │ └── ConcertCard.jsx
+│ │ ├── pages/
+│ │ │ ├── Home.jsx
+│ │ │ ├── Concerts.jsx
+│ │ │ ├── Profile.jsx
+│ │ │ └── AdminDashboard.jsx
+│ │ ├── redux/
+│ │ │ ├── store.js
+│ │ │ └── slices/
+│ │ │ ├── authSlice.js
+│ │ │ ├── concertSlice.js
+│ │ │ └── bookingSlice.js
+│ │ ├── App.jsx
+│ │ ├── main.jsx
+│ │ └── index.css
+│ └── package.json
 │
-├── README.md                        # Project documentation
+├── README.md
+├── .gitignore
+├── package.json
+└── LICENSE
