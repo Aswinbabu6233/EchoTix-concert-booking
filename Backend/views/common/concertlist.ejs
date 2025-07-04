@@ -18,7 +18,7 @@
 
           <!-- City Filter -->
          <div class="cityselection">
-          <label for="city">Select City:</label>
+          <label for="city">City:</label>
           <select name="city" id="city" onchange="document.getElementById('filterForm').submit()">
             <option value="All" <%= selectedCity === 'All' ? 'selected' : '' %>>All</option>
             <% if (cities && cities.length > 0) { %>

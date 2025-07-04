@@ -53,35 +53,41 @@ router.get("/", async (req, res) => {
     );
 
     const randomArtists = await Promise.all(
-      randomIndexes.map((i) => Artists.findOne().skip(i))
+      randomIndexes.map(
+        (i) => Artists.findOne().skip(i).lean() // lean gives a plain object
+      )
     );
 
     // Step 5: Get approved testimonials
     const testimonials = await Testimonial.find({ isApproved: true })
       .populate("user")
       .lean();
-
-    res.status(202).json({
-      concerts: concertsToShow,
-      artists: randomArtists,
-      totalConcerts: concertsToShow.length,
-      testimonials: testimonials,
+    res.status(200).json({
+      success: true,
+      data: {
+        concerts: concertsToShow,
+        artists: randomArtists,
+        totalConcerts: concertsToShow.length,
+        testimonials: testimonials,
+        error: [],
+      },
     });
   } catch (error) {
     console.error("Error loading homepage:", error);
-    res.status(500).send("Server Error");
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+    });
   }
 });
 
-// contert list
+// concert list
 router.get("/concert/list", async (req, res) => {
   try {
     const now = new Date();
 
-    // Step 1: Get all concerts (not lean yet, since we need to update them)
-    let allConcerts = await Concert.find({});
-
-    // Step 2: Update status to "past" based on date
+    // Step 1: Update outdated concerts
+    const allConcerts = await Concert.find({});
     await Promise.all(
       allConcerts.map(async (concert) => {
         if (concert.status === "upcoming" && concert.date < now) {
@@ -91,24 +97,21 @@ router.get("/concert/list", async (req, res) => {
       })
     );
 
-    // Step 3: Now continue with your filters
+    // Step 2: Filters
     const { city, query, status } = req.query;
 
-    // City filter (optional)
     const cityFilter = city && city.toLowerCase() !== "all" ? { city } : {};
 
-    // Status filter
     const statusValue = status || "upcoming";
-
     if (statusValue.toLowerCase() === "upcoming") {
-      statusFilter = { date: { $gte: now } };
+      statusFilter = { date: { $gte: now }, status: "upcoming" };
     } else if (statusValue.toLowerCase() === "past") {
-      statusFilter = { date: { $lt: now } };
+      statusFilter = { date: { $lt: now }, status: "past" };
     } else {
       statusFilter = { status: statusValue };
     }
 
-    // Band search (optional)
+    // Step 3: Band search (optional)
     let bandIds = [];
     if (query) {
       const bands = await Band.find({
@@ -117,7 +120,7 @@ router.get("/concert/list", async (req, res) => {
       bandIds = bands.map((band) => band._id);
     }
 
-    // Build concert query
+    // Step 4: Build query
     const concertQuery = {
       ...statusFilter,
       ...cityFilter,
@@ -130,20 +133,18 @@ router.get("/concert/list", async (req, res) => {
       }),
     };
 
-    // Fetch concerts to display
     const concerts = await Concert.find(concertQuery)
       .populate("band")
       .sort({ date: 1 })
       .lean();
 
-    // Get filter options
-    const cities = (await Concert.distinct("city")).sort();
-    const statuses = await Concert.distinct("status").sort();
-
-    // Convert time format
+    // Step 5: Format time
     concerts.forEach((concert) => {
       concert.time12hr = convertTo12Hour(concert.time);
     });
+
+    const cities = (await Concert.distinct("city")).sort();
+    const statuses = await Concert.distinct("status").sort();
 
     res.status(200).json({
       concerts,
@@ -153,7 +154,6 @@ router.get("/concert/list", async (req, res) => {
       selectedCity: city || "all",
       selectedStatus: status || "upcoming",
       query,
-      convertTo12Hour,
     });
   } catch (error) {
     console.error("Error loading concerts:", error);

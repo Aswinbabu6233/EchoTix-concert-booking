@@ -143,7 +143,7 @@ nav ul li a::after {
 }
 
 nav ul li a:hover {
-  color: #ff4754;
+  color: #fff;
 }
 
 nav ul li a:hover::after {

@@ -15,6 +15,11 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 // User registration route
+router.get("/login", (req, res) => {
+  // You can send a response indicating no errors (e.g. initial load)
+  res.json({ success: true, errors: [] });
+});
+
 router.post(
   "/register",
   upload.single("profileImage"),
@@ -104,10 +109,21 @@ router.post(
       const token = jwt.sign(
         { userId: user._id, role: user.role },
         process.env.JWT_SECRET,
-        { expiresIn: "1h" }
+        { expiresIn: "5h" }
       );
+      const profileImageBase64 = user.profileImage.data.toString("base64");
 
-      res.json({ token, userId: user._id, role: user.role });
+      res.json({
+        token,
+        userId: user._id,
+        role: user.role,
+        name: user.username,
+        email: user.email,
+        profileImage: {
+          contentType: user.profileImage.contentType,
+          data: profileImageBase64,
+        },
+      });
     } catch (error) {
       console.error("Login error:", error);
       res.status(500).json({ message: "Server error" });

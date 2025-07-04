@@ -21,6 +21,13 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 // admin login
+router.get("/login", (req, res) => {
+  res.status(200).json({
+    errors: [],
+    hidenav: true,
+  });
+});
+
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
 

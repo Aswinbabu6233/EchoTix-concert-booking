@@ -2,6 +2,7 @@ require("dotenv").config();
 
 const createError = require("http-errors");
 var express = require("express");
+var cors = require("cors");
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
@@ -22,6 +23,14 @@ require("dotenv").config();
 const expressLayouts = require("express-ejs-layouts");
 
 var app = express();
+// CORS setup
+app.use(
+  cors({
+    origin: process.env.CORS_ORIGIN || "http://localhost:5173",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
