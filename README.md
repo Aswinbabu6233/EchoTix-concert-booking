@@ -51,3 +51,42 @@
 
 ## 📂 Project Structure
 
+EchoTix-concert-booking/
+├── Backend/                         # Node.js + Express backend
+│   ├── bin/                         # Server start script
+│   ├── database/                    # MongoDB connection config
+│   ├── Middleware/                 # Authentication & error middlewares
+│   ├── model/                       # Mongoose schemas (User, Band, Concert, etc.)
+│   ├── public/                      # Public/static files
+│   ├── routes/                      # All backend routes
+│   ├── utils/                       # QR code, PDF, email helpers
+│   ├── views/                       # EJS views (from older version)
+│   ├── .env                         # Backend environment variables
+│   ├── app.js                       # Express entry point
+│   └── package.json
+│
+├── Frontend/                        # React + Redux frontend
+│   ├── public/                      # HTML & static assets
+│   ├── src/
+│   │   ├── assets/                  # Images, icons, Lottie JSON
+│   │   ├── Components/
+│   │   │   ├── concertcard/         # Concert card components
+│   │   │   ├── Loading/             # Loading animation/component
+│   │   │   ├── NavBar/              # Navigation bar
+│   │   │   └── redux/               # Redux store and slices
+│   │   ├── pages/                   # Route pages: Home, Login, Signup, etc.
+│   │   │   ├── artistlist.jsx
+│   │   │   ├── concertlist.jsx
+│   │   │   ├── homepage.jsx
+│   │   │   ├── Loginpage.jsx
+│   │   │   └── Signup.jsx
+│   │   ├── styles/                  # Plain CSS styling
+│   │   │   ├── commonstyles.css
+│   │   │   └── teststyle.css
+│   │   ├── main.jsx                 # React entry file
+│   │   └── route.jsx                # React Router config
+│   ├── .env                         # Frontend environment variables
+│   ├── package.json
+│   └── index.html
+│
+├── README.md                        # Project documentation
