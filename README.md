@@ -1,43 +1,73 @@
-# 🎫 EchoTix - Concert Booking Application
+# 🎫 EchoTix – Concert Booking Platform
 
-EchoTix is a fully-featured online concert ticket booking platform where users can explore concerts, book tickets with integrated Razorpay payment, and receive unique ticket IDs with QR codes. Admins can manage concerts, artists, and bookings via a powerful dashboard. Built with Node.js, Express, MongoDB, and EJS, it offers a smooth experience for both users and administrators.
-
----
-
-## ✨ Key Features
-
-- ✅ User registration & login with JWT authentication
-- 🎵 Browse and filter concerts by band, artist, and date
-- 💳 Razorpay integration for secure online payments
-- 🎟️ Book tickets (limit 3 per user per concert) with unique ticket ID & QR code
-- 📄 PDF ticket generation and optional email delivery
-- 🧑‍💻 Admin panel to manage bands, artists, concerts, and bookings
-- 📊 Booking history & ticket management for users
-- 🔒 Auth middleware for user and admin roles
+**EchoTix** is a full-stack concert ticket booking platform that allows users to explore live music events, book tickets online, and receive digital passes with QR codes. This project was initially built using **EJS (server-rendered)** and later fully rebuilt using **React.js (client-side SPA)** for a more dynamic and responsive experience.
 
 ---
 
-## 🛠️ Technologies Used
+## 🧰 Versions Developed
 
-- **Backend:** Node.js, Express.js
-- **Frontend:** EJS, HTML, CSS, JavaScript
-- **Database:** MongoDB (via Mongoose)
-- **Authentication:** JWT (JSON Web Tokens)
-- **Payments:** Razorpay
-- **Other:**
-  - QR code generation
-  - PDF creation (`html-pdf-node`)
-  - Emailing via `nodemailer` (optional)
+| Version         | Frontend     | Backend | Deployment |
+|----------------|--------------|---------|------------|
+| ✅ V1 - EJS     | EJS + CSS    | Node.js + Express.js | Localhost |
+| ✅ V2 - React   | React.js + Redux + CSS | Same backend (API only) | Client–Server architecture |
 
 ---
 
-## 🚀 Getting Started
+## 🚀 Features
 
-Follow these steps to run the project locally.
+### 👤 User Features
+- Register and Login (JWT-based)
+- Browse upcoming concerts with details
+- Book up to 3 tickets per concert
+- Razorpay payment integration
+- Auto-generated Ticket ID + QR Code
+- Download ticket PDF
+- View, manage, and cancel bookings
+- Review and rate concerts
 
-### 1. Clone the repository
+### 🔐 Admin Features
+- Admin dashboard login
+- Create/edit/delete Bands, Artists, Concerts
+- Upload artist and band images (Multer memory storage)
+- View all users and bookings
+- Cancel concerts (auto-cancels user tickets too)
 
-```bash
-git clone https://github.com/Aswinbabu6233/EchoTix-concert-booking.git
-cd EchoTix-concert-booking
-```
+---
+
+## 🛠️ Tech Stack
+
+### Frontend
+- ✅ React.js (Latest)
+- ✅ Redux Toolkit
+- ✅ React Router DOM
+- ✅ Normal CSS (No Bootstrap/Tailwind)
+- ✅ EJS (Initial Version)
+
+### Backend
+- Node.js
+- Express.js
+- MongoDB (Mongoose)
+- JWT for Auth
+- Multer for Image Uploads
+- Razorpay for Payment
+- html-pdf-node for Ticket PDF Generation
+- qrcode for QR Generation
+
+---
+
+## ⚙️ Core Functionalities
+
+- 🔐 JWT Auth (Login, Register)
+- 📤 Image upload via Multer (memory storage)
+- 💸 Secure Payment using Razorpay
+- 📄 PDF Ticket with QR & Ticket ID
+- ⚙️ Role-based Access (Admin/User)
+- 📊 Review & Star Rating System
+- 🔁 Version Migration: EJS to React
+
+---
+
+## 🎨 UI Snapshots
+
+> Add screenshots here:
+
