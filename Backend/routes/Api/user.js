@@ -10,6 +10,7 @@ const bcrypt = require("bcrypt");
 const User = require("../../model/usermodel");
 const jwt = require("jsonwebtoken");
 const { body, validationResult } = require("express-validator");
+const Testimonial = require("../../model/testimonalreview");
 const storage = multer.memoryStorage();
 
 const upload = multer({ storage: storage });
