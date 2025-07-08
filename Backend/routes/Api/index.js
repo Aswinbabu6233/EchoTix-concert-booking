@@ -81,7 +81,6 @@ router.get("/", async (req, res) => {
   }
 });
 
-// concert list
 router.get("/concert/list", async (req, res) => {
   try {
     const now = new Date();
@@ -161,6 +160,65 @@ router.get("/concert/list", async (req, res) => {
   }
 });
 
+// concert detail
+
+router.get("/concert/:id", async (req, res) => {
+  try {
+    const now = new Date();
+    const concertId = req.params.id;
+
+    let concertDoc = await Concert.findById(concertId).populate("band");
+    if (!concertDoc) {
+      return res.status(404).json({ message: "Concert not found" });
+    }
+
+    // Auto-update status if date has passed
+    if (concertDoc.status === "upcoming" && concertDoc.date < now) {
+      concertDoc.status = "past";
+      await concertDoc.save();
+    }
+
+    const concert = concertDoc.toObject(); // convert to plain object
+    const artists = await Artists.find({ band: concert.band._id }).lean();
+
+    const hours = Math.floor(concert.duration / 60);
+    const minutes = concert.duration % 60;
+    concert.durationFormatted = `${hours > 0 ? hours + " hr" : ""} ${
+      minutes > 0 ? minutes + " min" : ""
+    }`.trim();
+
+    concert.time12hr = convertTo12Hour(concert.time);
+
+    const reviews = await Review.find({ concert: concertId })
+      .populate("user")
+      .lean();
+
+    const ratingData = [5, 4, 3, 2, 1].map((star) => {
+      const count = reviews.filter((r) => r.rating === star).length;
+      return { star, count };
+    });
+
+    const total = reviews.length;
+    let rating_based_on_star = 0;
+    ratingData.forEach((r) => (rating_based_on_star += r.star * r.count));
+    const average = total === 0 ? 0 : (rating_based_on_star / total).toFixed(1);
+
+    res.status(200).json({
+      concert,
+      artists,
+      reviews,
+      ratingData,
+      total,
+      average,
+    });
+  } catch (error) {
+    console.error("Error fetching concert details:", error);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
+// concert list
+
 // concert review post
 router.post(
   "/concerts/review/:id",
@@ -169,7 +227,7 @@ router.post(
   async (req, res) => {
     try {
       const concertId = req.params.id;
-      const userId = req.user._id; // Assuming user ID is stored in JWT payload
+      const userId = req.user.userId; // Assuming user ID is stored in JWT payload
       const { rating, comment } = req.body;
 
       // Create new review
@@ -263,7 +321,7 @@ router.get(
 
       const existingbookings = await Booking.find({
         concert: concert._id,
-        user: req.user._id,
+        user: req.user.userId,
       }).lean();
       const alreadybookedcount = existingbookings.reduce(
         (total, booking) => total + booking.ticketQuantity,
@@ -342,7 +400,7 @@ router.post(
       // Create new booking document
       const newBooking = await Booking.create({
         concert: concertId,
-        user: req.user._id,
+        user: req.user.userId,
         ticketQuantity,
         totalPrice,
         qrcode,
@@ -377,57 +435,66 @@ router.post(
 );
 
 ///booking success
-router.get(
-  "/booking/success/:id",
-  authenticateJWT,
-  isApiUser,
-  async (req, res) => {
-    try {
-      const booking = await Booking.findById(req.params.id)
-        .populate({
-          path: "concert",
-          populate: { path: "band" },
-        })
-        .populate("user");
-
-      if (!booking) return res.status(404).send("Booking not found");
-
-      booking.concert.time12hr = convertTo12Hour(booking.concert.time);
-
-      res.status(200).json({
-        message: "Booking success page loaded successfully",
-        booking,
-        shared: req.query.shared === "1", // Check if shared query param is present
-      });
-    } catch (err) {
-      console.error("Error loading booking success page:", err);
-      res.status(500).send("Server Error");
-    }
-  }
-);
-
-// share email ticket
-router.get("/booking/share/:id", async (req, res) => {
+// GET /booking/success/:id
+router.get("/success/:id", authenticateJWT, isApiUser, async (req, res) => {
   try {
     const booking = await Booking.findById(req.params.id)
-      .populate("user")
       .populate({
         path: "concert",
         populate: { path: "band" },
-      });
+      })
+      .populate({ path: "user" })
+      .lean(); // ✅ Makes it a plain object, easy to manipulate
 
-    if (!booking) return res.status(404).send("Booking not found");
+    if (!booking) {
+      return res.status(404).json({ message: "Booking not found" });
+    }
+
+    // ✅ Convert image buffer to base64 safely
+    if (
+      booking.concert &&
+      booking.concert.concertImage &&
+      booking.concert.concertImage.data
+    ) {
+      booking.concert.concertImage.data =
+        booking.concert.concertImage.data.toString("base64");
+    }
+
+    booking.concert.time12hr = convertTo12Hour(booking.concert.time);
+
+    res.status(200).json({ booking });
+  } catch (error) {
+    console.error("Error fetching booking:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+router.get("/booking/share/:id", async (req, res) => {
+  try {
+    const booking = await Booking.findById(req.params.id)
+      .populate({
+        path: "concert",
+        populate: { path: "band" },
+      })
+      .populate("user")
+      .lean();
+
+    if (!booking) return res.status(404).json({ message: "Booking not found" });
+
+    if (!booking.user || !booking.user.email) {
+      return res.status(400).json({ message: "User email not available" });
+    }
 
     const pdfBuffer = await pdfticketgenerator(booking);
-
     await sendTicketEmail(booking.user.email, booking, pdfBuffer);
+
     res.status(200).json({
-      message: "Ticket shared successfully",
+      message: "Ticket shared successfully via email",
       success: true,
     });
   } catch (error) {
-    console.error("Share ticket email error:", error);
-    res.status(500).send("Server error");
+    console.error("Share ticket email error:", error.message);
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 });
 
@@ -456,8 +523,8 @@ router.get(
 
       res.send(pdfBuffer);
     } catch (error) {
-      console.error("Error downloading ticket PDF:", error);
-      res.status(500).send("Server Error");
+      console.error("Share ticket email error:", error.message);
+      res.status(500).json({ message: "Server error", error: error.message });
     }
   }
 );

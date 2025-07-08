@@ -5,17 +5,21 @@ import axios from "axios";
 import Header from "../Components/NavBar/Navbar";
 import { setUser } from "../Components/redux/userslice";
 import { useDispatch } from "react-redux";
+import BASE_API from "../config/baseapi";
+import Loader from "../Components/Loading/loading";
 
 const Loginpage = () => {
   const dispatch = useDispatch();
   var [email, setEmail] = useState("");
   var [password, setPassword] = useState("");
   var [error, setError] = useState("");
+  var [loading, setloading] = useState(false);
   var navigate = useNavigate();
   async function handleLogin(e) {
     e.preventDefault();
+    setloading(true);
     await axios
-      .post("http://localhost:3000/api/user/login", {
+      .post(BASE_API + "/user/login", {
         email: email,
         password: password,
       })
@@ -34,12 +38,16 @@ const Loginpage = () => {
         dispatch(setUser(user));
         localStorage.setItem("user", JSON.stringify(user));
         setError("");
+        setloading(false);
         navigate("/");
       })
       .catch((error) => {
         setError("Login failed. Please check your credentials.");
         console.error(error);
       });
+  }
+  if (loading) {
+    return <Loader />;
   }
 
   return (

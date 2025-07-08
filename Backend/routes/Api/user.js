@@ -11,6 +11,8 @@ const User = require("../../model/usermodel");
 const jwt = require("jsonwebtoken");
 const { body, validationResult } = require("express-validator");
 const Testimonial = require("../../model/testimonalreview");
+const Booking = require("../../model/bookingmodel");
+const generateTicketPDF = require("../../utils/pdfgeneration");
 const storage = multer.memoryStorage();
 
 const upload = multer({ storage: storage });
@@ -65,7 +67,7 @@ router.post(
       const token = jwt.sign(
         { userId: newUser._id, role: newUser.role },
         process.env.JWT_SECRET,
-        { expiresIn: "1h" }
+        { expiresIn: "24h" }
       );
       res.status(201).json({
         message: "User registered successfully",
@@ -79,6 +81,36 @@ router.post(
     }
   }
 );
+
+// profile
+router.get("/profile", authenticateJWT, isApiUser, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.userId).select("-password");
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    let profileImage = null;
+    if (user.profileImage?.data) {
+      profileImage = {
+        contentType: user.profileImage.contentType,
+        data: user.profileImage.data.toString("base64"),
+      };
+    }
+
+    res.status(200).json({
+      success: true,
+      user: {
+        _id: user._id,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+        profileImage,
+      },
+    });
+  } catch (error) {
+    console.error("Error fetching user profile:", error);
+    res.status(500).json({ success: false, message: "Server Error" });
+  }
+});
 
 // user login route
 
@@ -110,7 +142,7 @@ router.post(
       const token = jwt.sign(
         { userId: user._id, role: user.role },
         process.env.JWT_SECRET,
-        { expiresIn: "5h" }
+        { expiresIn: "24h" }
       );
       const profileImageBase64 = user.profileImage.data.toString("base64");
 
@@ -128,6 +160,43 @@ router.post(
     } catch (error) {
       console.error("Login error:", error);
       res.status(500).json({ message: "Server error" });
+    }
+  }
+);
+
+// userreview
+router.post(
+  "/review",
+  authenticateJWT,
+  isApiUser,
+  [body("review").trim().notEmpty().withMessage("Review field is required")],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ success: false, errors: errors.array() });
+    }
+
+    const { review } = req.body;
+
+    try {
+      const testimonial = new Testimonial({
+        user: req.user.userId, // ✅ Assuming you store JWT-decoded user info in req.user
+        content: review,
+        isApproved: false, // Requires admin approval
+      });
+
+      await testimonial.save();
+
+      return res.status(201).json({
+        success: true,
+        message: "Review submitted. Awaiting admin approval.",
+      });
+    } catch (error) {
+      console.error("Error saving testimonial:", error);
+      return res.status(500).json({
+        success: false,
+        message: "Something went wrong. Please try again later.",
+      });
     }
   }
 );
@@ -165,6 +234,109 @@ router.put(
     } catch (error) {
       console.error("Profile update error:", error);
       res.status(500).json({ message: "Server error" });
+    }
+  }
+);
+
+router.get("/tickets", authenticateJWT, isApiUser, async (req, res) => {
+  try {
+    const tickets = await Booking.find({ user: req.user.userId }) // assuming you're using JWT; change to `req.session.user._id` if sessions
+      .populate("user")
+      .populate({
+        path: "concert",
+        populate: { path: "band" },
+      })
+      .sort({ createdAt: -1 });
+
+    const now = new Date();
+
+    const upcomingTickets = [];
+    const pastTickets = [];
+    const cancelledTickets = [];
+
+    for (const ticket of tickets) {
+      const concertDate = new Date(ticket.concert.date);
+      const bookingEndsAt = ticket.concert.bookingEndsAt
+        ? new Date(ticket.concert.bookingEndsAt)
+        : null;
+      const bookingCreatedAt = new Date(ticket.createdAt);
+
+      const diffInMs = now - bookingCreatedAt;
+      const diffInHours = diffInMs / (1000 * 60 * 60);
+      const canCancel =
+        ticket.status === "completed" &&
+        diffInHours <= 5 &&
+        (!bookingEndsAt || now <= bookingEndsAt);
+
+      // Attach flag to plain object (not Mongoose doc)
+      const ticketData = {
+        ...ticket.toObject(),
+        canCancel,
+      };
+
+      if (
+        ticket.status === "completed" &&
+        ticket.concert.status === "upcoming" &&
+        concertDate > now
+      ) {
+        upcomingTickets.push(ticketData);
+      } else if (
+        ticket.status === "completed" &&
+        (ticket.concert.status === "past" || concertDate <= now)
+      ) {
+        pastTickets.push(ticketData);
+      } else if (
+        ticket.status === "cancelled_by_user" ||
+        ticket.status === "cancelled_by_admin"
+      ) {
+        cancelledTickets.push(ticketData);
+      }
+    }
+
+    return res.status(200).json({
+      upcomingTickets,
+      pastTickets,
+      cancelledTickets,
+    });
+  } catch (error) {
+    console.error("Error fetching user ticket history:", error);
+    return res.status(500).json({ message: "Failed to fetch ticket history" });
+  }
+});
+
+router.get(
+  "/download/:id/pdf",
+  authenticateJWT,
+  isApiUser,
+  async (req, res) => {
+    try {
+      const booking = await Booking.findById(req.params.id)
+        .populate("user")
+        .populate({
+          path: "concert",
+          populate: { path: "band" },
+        });
+
+      if (!booking)
+        return res.status(404).json({ message: "Booking not found" });
+
+      // Optional: Check if the user requesting is the one who made the booking
+      if (booking.user._id.toString() !== req.user.userId) {
+        return res
+          .status(403)
+          .json({ message: "Access denied. Not your ticket." });
+      }
+
+      const pdfBuffer = await generateTicketPDF(booking);
+
+      res.set({
+        "Content-Type": "application/pdf",
+        "Content-Disposition": `attachment; filename="ticket-${booking._id}.pdf"`,
+      });
+      res.send(pdfBuffer);
+    } catch (error) {
+      console.error("Error downloading ticket PDF:", error);
+      res.status(500).json({ message: "Server Error" });
     }
   }
 );

@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import defaultimg from "../assets/default-profile.jpg";
 import Loader from "../Components/Loading/loading";
 import ConcertCard from "../Components/concertcard/concertcard";
-
+import BASE_API from "../config/baseapi";
 const Homepage = () => {
   const [concerts, setConcerts] = useState([]);
   const [artists, setArtists] = useState([]);
@@ -34,7 +34,7 @@ const Homepage = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3000/api")
+      .get(BASE_API)
       .then((response) => {
         if (response.data.success) {
           setConcerts(response.data.data.concerts);

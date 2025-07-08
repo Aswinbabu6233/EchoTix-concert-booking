@@ -26,6 +26,8 @@ const authenticateJWT = (req, res, next) => {
 
 // Role-specific middleware
 const isApiUser = (req, res, next) => {
+  console.log("Checking role:", req.user.role); // 👀 LOG THIS
+
   if (req.user && req.user.role === "user") {
     next();
   } else {

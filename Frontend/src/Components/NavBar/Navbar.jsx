@@ -7,6 +7,7 @@ const Header = ({ hidenav }) => {
   const adminpresent = user?.role === "admin";
   const userpresent = user?.role === "user";
   const userdetails = user;
+
   const toggleMobileMenu = () => {
     // Toggle mobile menu logic
     const nav = document.querySelector(".nav-menu");

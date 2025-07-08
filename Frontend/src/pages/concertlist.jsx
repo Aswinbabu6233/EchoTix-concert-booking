@@ -3,6 +3,7 @@ import axios from "axios";
 import { Link, useSearchParams } from "react-router-dom";
 import Loader from "../Components/Loading/loading";
 import Header from "../Components/NavBar/Navbar";
+import BASE_API from "../config/baseapi";
 
 const ConcertList = () => {
   const [concerts, setConcerts] = useState([]);
@@ -18,7 +19,7 @@ const ConcertList = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/api/concert/list", {
+        const res = await axios.get(BASE_API + "/concert/list", {
           params: { query, city: selectedCity, status: selectedStatus },
         });
         setConcerts(res.data.concerts);

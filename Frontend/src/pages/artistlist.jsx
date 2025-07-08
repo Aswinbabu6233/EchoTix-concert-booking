@@ -3,6 +3,7 @@ import Header from "../Components/NavBar/Navbar";
 import axios from "axios";
 import Loader from "../Components/Loading/loading";
 import { Link } from "react-router-dom";
+import BASE_API from "../config/baseapi";
 
 const ArtistList = () => {
   const [artists, setArtists] = useState([]);
@@ -12,7 +13,7 @@ const ArtistList = () => {
     const fetchArtists = async () => {
       try {
         const response = await axios
-          .get("http://localhost:3000/api/artists/list")
+          .get(BASE_API + "/artists/list")
           .then((res) => res.data);
         setArtists(response.artists);
         setLoading(false);
