@@ -46,13 +46,21 @@ router.post("/login", async (req, res) => {
     const token = jwt.sign(
       { userId: user._id, role: user.role },
       process.env.JWT_SECRET,
-      { expiresIn: "1h" }
+      { expiresIn: "24h" }
     );
-    res.status(200).json({
+
+    const profileImageBase64 = user.profileImage.data.toString("base64");
+
+    res.json({
       token,
       userId: user._id,
-      username: user.username,
       role: user.role,
+      name: user.username,
+      email: user.email,
+      profileImage: {
+        contentType: user.profileImage.contentType,
+        data: profileImageBase64,
+      },
     });
   } catch (error) {
     console.error("Login error:", error);
@@ -207,58 +215,73 @@ router.get("/artists", authenticateJWT, isApiAdmin, async (req, res) => {
 
 // artist upload
 router.post(
-  "/create/artistsubmit",
+  "/create/multiartistsubmit",
   authenticateJWT,
   isApiAdmin,
-  upload.single("artistimg"),
-  [
-    body("artistname").notEmpty().withMessage("Artist Name is required"),
-    body("artistdiscription")
-      .notEmpty()
-      .withMessage("Artist description is required"),
-    body("band").notEmpty().withMessage("Band is required"),
-  ],
+  upload.array("photos"),
   async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-
-    if (!req.file) {
-      return res.status(400).json({
-        errors: [{ msg: "Artist image is required" }],
-      });
-    }
-
     try {
-      const { artistname, artistdiscription, band } = req.body;
+      const { bandId, name, role, description } = req.body;
+      const photos = req.files;
 
-      const artist = new Artist({
-        name: artistname.trim(),
-        description: artistdiscription.trim(),
-        band: band.trim(),
-        photo: {
-          data: req.file.buffer,
-          contentType: req.file.mimetype,
-        },
-      });
+      // Validate inputs
+      if (
+        !Array.isArray(name) ||
+        !Array.isArray(role) ||
+        !Array.isArray(description) ||
+        name.length !== role.length ||
+        name.length !== description.length ||
+        name.length !== photos.length
+      ) {
+        return res.status(400).json({
+          errors: [
+            {
+              msg: "All fields (name, role, description, photo) are required and counts must match.",
+            },
+          ],
+        });
+      }
 
-      await artist.save();
+      // Prepare artist data
+      const ArtistData = [];
+      for (let i = 0; i < name.length; i++) {
+        ArtistData.push({
+          name: name[i].trim(),
+          role: role[i].trim(),
+          description: description[i].trim(),
+          band: bandId,
+          photo: {
+            data: photos[i].buffer,
+            contentType: photos[i].mimetype,
+          },
+        });
+      }
+
+      // Insert into DB
+      const savedArtists = await Artist.insertMany(ArtistData);
+
+      // Fetch band name for log
+      const bandDoc = await Band.findById(bandId);
 
       await ActivityLog.create({
         actionType: "artist_added",
-        message: `New artist "${artist.name}" added`,
-        icon: "fa-user",
+        message: `New artists "${ArtistData.map((a) => a.name).join(
+          ", "
+        )}" added to band "${bandDoc.name}"`,
+        icon: "fa-users",
       });
 
       res.status(201).json({
-        message: "Artist successfully uploaded",
-        artistId: artist._id,
+        message: "Artists added successfully!",
+        artists: savedArtists.map((a) => ({
+          id: a._id,
+          name: a.name,
+        })),
       });
     } catch (error) {
-      console.error("Error while saving artist details:", error);
+      console.error("Error uploading artists:", error);
       res.status(500).json({
-        errors: [{ msg: "An error occurred while saving the artist data" }],
+        errors: [{ msg: "Server error occurred while saving artists." }],
       });
     }
   }
@@ -422,24 +445,44 @@ router.post(
 // edit section
 
 // artist edit
-router.get(
-  "/edit/artist/:id",
-  authenticateJWT,
-  isApiAdmin,
-  async (req, res) => {
-    try {
-      const artist = await Artist.findById(req.params.id).populate("band");
-      const bands = await Band.find({});
-      if (!artist) {
-        return res.status(404).send("Artist not found");
-      }
-      res.status(200).json({ artist, bands });
-    } catch (error) {
-      console.error("Error loading artist for edit:", error);
-      res.status(500).send("Server error");
+router.get("/get/artist/:id", authenticateJWT, isApiAdmin, async (req, res) => {
+  try {
+    const artist = await Artist.findById(req.params.id).populate("band");
+    const bands = await Band.find({});
+
+    if (!artist) {
+      return res.status(404).send("Artist not found");
     }
+
+    // Convert Buffer to base64 if photo exists
+    let photoData = null;
+    if (artist.photo?.data) {
+      photoData = artist.photo.data.toString("base64");
+    }
+
+    // Send response
+    res.status(200).json({
+      artist: {
+        _id: artist._id,
+        name: artist.name,
+        role: artist.role,
+        description: artist.description,
+        band: artist.band,
+        photo: photoData
+          ? {
+              data: photoData,
+              contentType: artist.photo.contentType,
+            }
+          : null,
+      },
+      bands,
+    });
+  } catch (error) {
+    console.error("Error loading artist for edit:", error);
+    res.status(500).send("Server error");
   }
-);
+});
+
 router.post(
   "/edit/artist/:id",
   authenticateJWT,
@@ -643,14 +686,19 @@ router.post(
 );
 
 // booking routes
-router.get("/bookings", isApiAdmin, authenticateJWT, async (req, res) => {
+router.get("/bookings", authenticateJWT, isApiAdmin, async (req, res) => {
   try {
-    const bookings = await Booking.find().populate("concert user").lean();
+    const bookings = await Booking.find()
+      .populate("concert user")
+      .sort({ createdAt: -1 })
+      .lean();
+
     const totalcompletedcount = await Booking.countDocuments({
       status: "completed",
     });
+
     const totalRevenue = await Booking.aggregate([
-      { $match: { status: "completed" } }, // Only count completed bookings
+      { $match: { status: "completed" } },
       {
         $group: {
           _id: null,
@@ -660,16 +708,18 @@ router.get("/bookings", isApiAdmin, authenticateJWT, async (req, res) => {
     ]);
 
     const revenue = totalRevenue.length > 0 ? totalRevenue[0].total : 0;
+
     res.status(200).json({
-      bookings: bookings,
-      totalcompletedcount: totalcompletedcount,
+      bookings,
+      totalcompletedcount,
       totalRevenue: revenue,
     });
   } catch (error) {
     console.error("Error fetching bookings:", error);
-    res.status(500).send("Server Error");
+    res.status(500).json({ error: "Server Error" });
   }
 });
+
 router.post(
   "/cancel-booking/:id",
   authenticateJWT,

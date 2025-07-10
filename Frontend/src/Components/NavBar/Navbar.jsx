@@ -35,6 +35,7 @@ const Header = ({ hidenav }) => {
       document.removeEventListener("click", handleClickOutside);
     };
   }, []);
+  console.log("user token:" + user.token + "user role:" + user.role);
 
   return (
     <header>
@@ -42,7 +43,7 @@ const Header = ({ hidenav }) => {
         {/* Logo */}
         <div className="logo">
           {adminpresent ? (
-            <Link to="/admin/dashboard">ECHOTIX ADMIN</Link>
+            <Link to="/admin/dashboard">ECHOTIX</Link>
           ) : (
             <Link to="/">ECHOTIX</Link>
           )}

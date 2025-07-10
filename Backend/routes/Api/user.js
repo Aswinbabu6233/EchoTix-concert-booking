@@ -179,16 +179,15 @@ router.post(
     const { review } = req.body;
 
     try {
-      const testimonial = new Testimonial({
-        user: req.user.userId, // ✅ Assuming you store JWT-decoded user info in req.user
+      const testimonial = await Testimonial.create({
+        user: req.user.userId,
         content: review,
-        isApproved: false, // Requires admin approval
+        isApproved: false,
       });
-
-      await testimonial.save();
 
       return res.status(201).json({
         success: true,
+        testimonialid: testimonial._id,
         message: "Review submitted. Awaiting admin approval.",
       });
     } catch (error) {

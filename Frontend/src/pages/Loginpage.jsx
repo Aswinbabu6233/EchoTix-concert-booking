@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import Header from "../Components/NavBar/Navbar";
-import { setUser } from "../Components/redux/userslice";
+import { clearUser, setUser } from "../Components/redux/userslice";
 import { useDispatch } from "react-redux";
 import BASE_API from "../config/baseapi";
 import Loader from "../Components/Loading/loading";
@@ -25,7 +25,8 @@ const Loginpage = () => {
       })
       .then((response) => {
         console.log(response.data.name);
-
+        dispatch(clearUser()); // clear redux state
+        localStorage.removeItem("user"); //clear local storage user
         const user = {
           name: response.data.name,
           email: response.data.email,

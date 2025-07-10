@@ -239,7 +239,11 @@ const ConcertDetail = () => {
                 {concertdata.status === "upcoming" &&
                 concertdata.ticketsAvailable > 0 ? (
                   <Link
-                    to={`/concert/${concertdata._id}/book`}
+                    to={
+                      userpresent
+                        ? `/concert/${concertdata._id}/book`
+                        : `/user/login`
+                    }
                     className="bookbtn"
                   >
                     <div>Book Now</div>
