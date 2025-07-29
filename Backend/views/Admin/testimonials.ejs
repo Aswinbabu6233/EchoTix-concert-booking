@@ -27,10 +27,11 @@
             <% testimonials.forEach(function(review) { %>
             <tr>
               <td>
-                <% if (review.user.profileImage && review.user.profileImage.data
-                && review.user.profileImage.contentType) { %>
+                <% if (review.user?.profileImage &&
+                review.user?.profileImage.data &&
+                review.user?.profileImage.contentType) { %>
                 <img
-                  src="data:<%= review.user.profileImage.contentType %>;base64,<%= review.user.profileImage.data.toString('base64') %>"
+                  src="data:<%= review.user?.profileImage.contentType %>;base64,<%= review.user?.profileImage.data.toString('base64') %>"
                 />
                 <% } else { %>
                 <img
@@ -40,7 +41,7 @@
                 />
                 <% } %>
               </td>
-              <td><%= review.user.username %></td>
+              <td><%= review.user?.username %></td>
               <td>
                 <%= review.content.length > 100 ? review.content.substring(0,
                 100) + "..." : review.content %>

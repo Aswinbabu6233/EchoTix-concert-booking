@@ -14,23 +14,46 @@ const Bandmanagement = () => {
   const [loading, setloading] = useState(true);
   const [banddata, setbanddata] = useState("");
 
+  const fetchband = async () => {
+    try {
+      const response = await axios.get(`${BASE_API}/admin/bands`, {
+        headers: { Authorization: `Bearer ${user.token}` },
+      });
+      setloading(false);
+      setbanddata(response.data);
+      setsuccessmsg("Data Loaded succes fully");
+    } catch (error) {
+      setloading(false);
+      seterror("Failed to load Band Detail from DataBase");
+      console.error(error);
+    }
+  };
   useEffect(() => {
-    const fetchband = async () => {
-      try {
-        const response = await axios.get(`${BASE_API}/admin/bands`, {
-          headers: { Authorization: `Bearer ${user.token}` },
-        });
-        setloading(false);
-        setbanddata(response.data);
-        setsuccessmsg("Data Loaded succes fully");
-      } catch (error) {
-        setloading(false);
-        seterror("Failed to load Band Detail from DataBase");
-        console.error(error);
-      }
-    };
     fetchband();
   }, [user.token]);
+
+  const deleteartist = async (id) => {
+    setloading(true);
+    setsuccessmsg("");
+    seterror("");
+    try {
+      const response = await axios.post(
+        `${BASE_API}/admin/band/delete/${id}`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${user.token}` },
+        }
+      );
+      setloading(false);
+      setsuccessmsg(response?.data?.message);
+      fetchband();
+    } catch (error) {
+      setloading(false);
+      seterror(
+        "Error Deleting Artist" + error?.response?.data || error?.message
+      );
+    }
+  };
 
   if (loading) {
     return <Loader />;
@@ -80,16 +103,16 @@ const Bandmanagement = () => {
                           to={"/admin/edit/band/" + show._id}
                           className="edit"
                         >
-                          <i class="fa-solid fa-file-pen"></i>
+                          <i className="fa-solid fa-file-pen"></i>
                         </Link>
                       </td>
                       <td>
                         <button
                           type="submit"
-                          class="delete"
-                          onclick="return confirm('Are you sure you want to delete this review?')"
+                          className="delete"
+                          onClick={() => deleteartist(show._id)}
                         >
-                          <i class="fa-solid fa-trash"></i>
+                          <i className="fa-solid fa-trash"></i>
                         </button>
                       </td>
                     </tr>

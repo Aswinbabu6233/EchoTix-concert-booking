@@ -34,7 +34,7 @@
           <tbody>
             <% bookings.forEach(function(booking) { %>
             <tr>
-              <td><%= booking.user.username%></td>
+              <td><%= booking.user?.username %></td>
               <td><%= booking.concert.title %></td>
               <td><%=booking.ticketQuantity%></td>
               <td><%=booking.totalPrice%></td>

@@ -35,7 +35,7 @@ const Header = ({ hidenav }) => {
       document.removeEventListener("click", handleClickOutside);
     };
   }, []);
-  console.log("user token:" + user.token + "user role:" + user.role);
+  console.log(user.token);
 
   return (
     <header>

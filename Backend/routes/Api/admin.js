@@ -15,7 +15,6 @@ const Booking = require("../../model/bookingmodel");
 const Artist = require("../../model/artistmodel");
 const ActivityLog = require("../../model/activitylogmodel");
 const { body, validationResult } = require("express-validator");
-const { isAdmin } = require("../../Middleware/authentication");
 const Testimonial = require("../../model/testimonalreview");
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
@@ -303,7 +302,7 @@ router.get("/concerts", authenticateJWT, isApiAdmin, async (req, res) => {
 
 // concert creation
 router.get(
-  "/create/concerts",
+  "/create/concerts/details",
   authenticateJWT,
   isApiAdmin,
   async (req, res) => {
@@ -554,7 +553,7 @@ router.post(
   "/edit/band/:id",
   upload.single("image"),
   authenticateJWT,
-  isAdmin,
+  isApiAdmin,
   async (req, res) => {
     const { name, description } = req.body;
     try {
@@ -563,7 +562,7 @@ router.post(
         return res.status(404).send("No band found");
       }
       band.name = name.trim();
-      band.discription = description.trim();
+      band.discription = description;
       if (req.file) {
         band.image = {
           data: req.file.buffer,
@@ -611,7 +610,7 @@ router.get(
 
 router.post(
   "/edit/concerts/:id",
-  isAdmin,
+  isApiAdmin,
   upload.single("photo"),
   async (req, res) => {
     const {

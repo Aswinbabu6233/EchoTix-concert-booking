@@ -19,6 +19,9 @@ import Bookingmanagement from "./pages/admin/bookingmanagement";
 import ApproveTestimonials from "./pages/admin/testimonials";
 import Artistcrate from "./pages/admin/artistcrate";
 import Artistedit from "./pages/admin/artistedit";
+import Bandcreate from "./pages/admin/bandcreate";
+import Bandedit from "./pages/admin/bandedit";
+import Concertcreate from "./pages/admin/concertcreate";
 
 var Routerpath = createBrowserRouter([
   { path: "/", element: <Homepage /> },
@@ -42,6 +45,9 @@ var Routerpath = createBrowserRouter([
   { path: "/admin/approve/reviews", element: <ApproveTestimonials /> },
   { path: "/admin/create/artist", element: <Artistcrate /> },
   { path: "/admin/artist/:id/edit", element: <Artistedit /> },
+  { path: "/admin/create/band", element: <Bandcreate /> },
+  { path: "/admin/edit/band/:id", element: <Bandedit /> },
+  { path: "/admin/create/concerts", element: <Concertcreate /> },
 ]);
 
 export default Routerpath;
