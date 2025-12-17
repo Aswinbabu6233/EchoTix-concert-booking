@@ -89,7 +89,7 @@ const Artistmanagement = () => {
                 </thead>
                 <tbody>
                   {artistData.artists.map((show, index) => (
-                    <tr>
+                    <tr key={index}>
                       <td>
                         <img
                           src={

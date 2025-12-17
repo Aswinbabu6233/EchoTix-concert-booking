@@ -1,133 +1,227 @@
-import React, { useEffect } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
+import "./Navbar.css";
 
 const Header = ({ hidenav }) => {
   const user = useSelector((state) => state.user);
+  const location = useLocation();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
   const adminpresent = user?.role === "admin";
   const userpresent = user?.role === "user";
   const userdetails = user;
 
-  const toggleMobileMenu = () => {
-    // Toggle mobile menu logic
-    const nav = document.querySelector(".nav-menu");
-    if (nav) {
-      nav.classList.toggle("show");
-    }
-  };
+  // Handle scroll effect for navbar background opacity if needed (optional enhancement)
   useEffect(() => {
-    const handleClickOutside = (e) => {
-      const navMenu = document.querySelector(".nav-menu");
-      const hamburger = document.querySelector(".hamburger");
-      if (
-        navMenu &&
-        navMenu.classList.contains("show") &&
-        !navMenu.contains(e.target) &&
-        !hamburger.contains(e.target)
-      ) {
-        navMenu.classList.remove("show");
-      }
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
     };
-
-    document.addEventListener("click", handleClickOutside);
-
-    return () => {
-      document.removeEventListener("click", handleClickOutside);
-    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-  console.log(user.token);
+
+  // Close mobile menu when route changes
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [location]);
+
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  if (hidenav) return null;
 
   return (
-    <header>
-      <div className="headersection">
+    <header className={`navbar-header ${scrolled ? "scrolled" : ""}`}>
+      <div className="navbar-container">
         {/* Logo */}
-        <div className="logo">
-          {adminpresent ? (
-            <Link to="/admin/dashboard">ECHOTIX</Link>
-          ) : (
-            <Link to="/">ECHOTIX</Link>
-          )}
+        <div className="navbar-logo">
+          <Link to={adminpresent ? "/admin/dashboard" : "/"}>ECHOTIX</Link>
         </div>
 
-        {/* Navigation */}
-        {!hidenav && (
-          <>
-            <div className="hamburger" onClick={toggleMobileMenu}>
-              <i className="fa-solid fa-bars"></i>
-            </div>
-
-            {adminpresent ? (
-              <nav className="admin-nav nav-menu">
-                <ul className="admin-links">
+        {/* Desktop Navigation */}
+        <nav className="navbar-menu">
+          {adminpresent ? (
+            <ul className="nav-links">
+              <li>
+                <Link className="nav-link" to="/admin/dashboard">
+                  Dashboard
+                </Link>
+              </li>
+              <li className="dropdown-container">
+                <span className="nav-link dropdown-trigger">
+                  Management <i className="fa-solid fa-caret-down"></i>
+                </span>
+                <ul className="dropdown-menu">
                   <li>
-                    <Link to="/admin/dashboard">Dashboard</Link>
-                  </li>
-                  <li className="dropdown-parent">
-                    <span>
-                      Management <i className="fa-solid fa-caret-down"></i>
-                    </span>
-                    <ul className="dropdown">
-                      <li>
-                        <Link to="/admin/bands">Bands</Link>
-                      </li>
-                      <li>
-                        <Link to="/admin/concerts">Concerts</Link>
-                      </li>
-                      <li>
-                        <Link to="/admin/artists">Artists</Link>
-                      </li>
-                    </ul>
-                  </li>
-                  <li>
-                    <Link to="/admin/bookings">Bookings</Link>
-                  </li>
-                  <li>
-                    <Link to="/admin/users">Users</Link>
-                  </li>
-                  <li>
-                    <Link to="/admin/logout">Logout</Link>
-                  </li>
-                </ul>
-              </nav>
-            ) : (
-              <nav className="nav-menu">
-                <ul className="nav-links">
-                  <li>
-                    <Link to="/">Home</Link>
-                  </li>
-                  <li>
-                    <Link to="/concert/list">Concerts</Link>
-                  </li>
-                  <li>
-                    <Link to="/artists/list">Artists</Link>
-                  </li>
-
-                  {userpresent ? (
-                    <Link to={"/user/profile"}>
-                      <img
-                        className="profilepic"
-                        src={
-                          userdetails?.profileImage?.data
-                            ? `data:${userdetails.profileImage.contentType};base64,${userdetails.profileImage.data}`
-                            : "/images/default-profile.jpg"
-                        }
-                        alt="profile"
-                      />
+                    <Link className="dropdown-item" to="/admin/bands">
+                      Bands
                     </Link>
-                  ) : (
-                    <li>
-                      <div className="header-right">
-                        <Link to="/user/login">
-                          <i className="fa-regular fa-user"></i> Login/Register
-                        </Link>
-                      </div>
-                    </li>
-                  )}
+                  </li>
+                  <li>
+                    <Link className="dropdown-item" to="/admin/concerts">
+                      Concerts
+                    </Link>
+                  </li>
+                  <li>
+                    <Link className="dropdown-item" to="/admin/artists">
+                      Artists
+                    </Link>
+                  </li>
                 </ul>
-              </nav>
+              </li>
+              <li>
+                <Link className="nav-link" to="/admin/bookings">
+                  Bookings
+                </Link>
+              </li>
+              <li>
+                <Link className="nav-link" to="/admin/users">
+                  Users
+                </Link>
+              </li>
+              <li>
+                <Link className="nav-link" to="/admin/logout">
+                  Logout
+                </Link>
+              </li>
+            </ul>
+          ) : (
+            <ul className="nav-links">
+              <li>
+                <Link className="nav-link" to="/">
+                  Home
+                </Link>
+              </li>
+              <li>
+                <Link className="nav-link" to="/concert/list">
+                  Concerts
+                </Link>
+              </li>
+              <li>
+                <Link className="nav-link" to="/artists/list">
+                  Artists
+                </Link>
+              </li>
+            </ul>
+          )}
+
+          {/* User Profile / Auth Buttons (Desktop) */}
+          <div className="auth-buttons">
+            {!adminpresent && (
+              <>
+                {userpresent ? (
+                  <Link to="/user/profile" className="profile-pic-container">
+                    <img
+                      className="nav-profile-pic"
+                      src={
+                        userdetails?.profileImage?.data
+                          ? `data:${userdetails.profileImage.contentType};base64,${userdetails.profileImage.data}`
+                          : "/images/default-profile.jpg"
+                      }
+                      alt="profile"
+                    />
+                  </Link>
+                ) : (
+                  <Link to="/user/login" className="login-link">
+                    <i className="fa-regular fa-user"></i> Login / Register
+                  </Link>
+                )}
+              </>
             )}
-          </>
-        )}
+          </div>
+        </nav>
+
+        {/* Mobile Hamburger Toggle */}
+        <div
+          className={`mobile-toggle ${isMobileMenuOpen ? "open" : ""}`}
+          onClick={toggleMobileMenu}
+        >
+          <div className="bar"></div>
+          <div className="bar"></div>
+          <div className="bar"></div>
+        </div>
+
+        {/* Mobile Menu Drawer */}
+        <div
+          className={`mobile-nav-overlay ${isMobileMenuOpen ? "open" : ""}`}
+          onClick={() => setIsMobileMenuOpen(false)}
+        ></div>
+
+        <div className={`mobile-nav-content ${isMobileMenuOpen ? "open" : ""}`}>
+          {adminpresent ? (
+            <ul className="mobile-nav-links">
+              <li>
+                <Link className="mobile-nav-link" to="/admin/dashboard">
+                  Dashboard
+                </Link>
+              </li>
+              <li>
+                <Link className="mobile-nav-link" to="/admin/bands">
+                  Bands
+                </Link>
+              </li>
+              <li>
+                <Link className="mobile-nav-link" to="/admin/concerts">
+                  Concerts
+                </Link>
+              </li>
+              <li>
+                <Link className="mobile-nav-link" to="/admin/artists">
+                  Artists
+                </Link>
+              </li>
+              <li>
+                <Link className="mobile-nav-link" to="/admin/bookings">
+                  Bookings
+                </Link>
+              </li>
+              <li>
+                <Link className="mobile-nav-link" to="/admin/users">
+                  Users
+                </Link>
+              </li>
+              <li>
+                <Link className="mobile-nav-link" to="/admin/logout">
+                  Logout
+                </Link>
+              </li>
+            </ul>
+          ) : (
+            <ul className="mobile-nav-links">
+              <li>
+                <Link className="mobile-nav-link" to="/">
+                  Home
+                </Link>
+              </li>
+              <li>
+                <Link className="mobile-nav-link" to="/concert/list">
+                  Concerts
+                </Link>
+              </li>
+              <li>
+                <Link className="mobile-nav-link" to="/artists/list">
+                  Artists
+                </Link>
+              </li>
+              {userpresent ? (
+                <li>
+                  <Link className="mobile-nav-link" to="/user/profile">
+                    My Profile
+                  </Link>
+                </li>
+              ) : (
+                <li>
+                  <Link className="mobile-nav-link" to="/user/login">
+                    Login / Register
+                  </Link>
+                </li>
+              )}
+            </ul>
+          )}
+        </div>
       </div>
     </header>
   );

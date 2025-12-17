@@ -5,6 +5,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import BASE_API from "../../config/baseapi";
 import { useSelector } from "react-redux";
+import { arrayBufferToBase64 } from "../../utils/imageUtils";
 
 const Concertedit = () => {
   const { id } = useParams();
@@ -77,8 +78,10 @@ const Concertedit = () => {
               <label>Current Photo</label>
               <div className="photo-box">
                 {concert.concertImage && concert.concertImage.data ? (
+
                   <img
-                    src={`data:${concert.concertImage.contentType};base64,${concert.concertImage.data}`}
+                    src={`data:${concert.concertImage.contentType
+                      };base64,${arrayBufferToBase64(concert.concertImage.data)}`}
                     alt="Current Concert Photo"
                   />
                 ) : (

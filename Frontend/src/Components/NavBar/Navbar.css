@@ -1,0 +1,315 @@
+/* Navbar.css */
+
+/* --- Variables & Theming --- */
+:root {
+    --nav-bg: rgba(10, 10, 10, 0.85);
+    /* Dark, semi-transparent */
+    --nav-border: rgba(255, 255, 255, 0.1);
+    --nav-blur: 16px;
+    --accent-color: #ff4754;
+    --text-main: #ffffff;
+    --text-muted: #a0a0a0;
+    --font-logo: "Wallpoet", cursive;
+    --font-body: "Open Sans", sans-serif;
+    --transition-speed: 0.3s;
+    --mobile-menu-bg: rgba(5, 5, 5, 0.95);
+}
+
+/* --- Header Container --- */
+.navbar-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 80px;
+    background: var(--nav-bg);
+    backdrop-filter: blur(var(--nav-blur));
+    -webkit-backdrop-filter: blur(var(--nav-blur));
+    border-bottom: 1px solid var(--nav-border);
+    z-index: 1000;
+    transition: all var(--transition-speed) ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.navbar-container {
+    width: 90%;
+    max-width: 1400px;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* --- Logo --- */
+.navbar-logo a {
+    font-family: var(--font-logo);
+    font-size: 2rem;
+    color: var(--accent-color);
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 0 0 10px rgba(255, 71, 84, 0.3);
+    transition: text-shadow var(--transition-speed) ease,
+        transform var(--transition-speed) ease;
+}
+
+.navbar-logo a:hover {
+    text-shadow: 0 0 20px rgba(255, 71, 84, 0.6);
+    transform: scale(1.05);
+}
+
+/* --- Desktop Navigation --- */
+.navbar-menu {
+    display: flex;
+    align-items: center;
+    gap: 2.5rem;
+}
+
+.nav-links {
+    display: flex;
+    list-style: none;
+    gap: 2rem;
+    margin: 0;
+    padding: 0;
+    align-items: center;
+}
+
+.nav-link {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-decoration: none;
+    position: relative;
+    transition: color var(--transition-speed) ease;
+    padding: 5px 0;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    color: var(--text-main);
+}
+
+/* Animated Underline */
+.nav-link::after {
+    content: "";
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: var(--accent-color);
+    transition: width var(--transition-speed) ease;
+    box-shadow: 0 0 8px var(--accent-color);
+}
+
+.nav-link:hover::after {
+    width: 100%;
+}
+
+/* --- Auth Buttons & Profile --- */
+.auth-buttons {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.login-link {
+    color: var(--text-main);
+    font-weight: 600;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: color var(--transition-speed) ease;
+}
+
+.login-link i {
+    color: var(--accent-color);
+}
+
+.login-link:hover {
+    color: var(--accent-color);
+}
+
+.profile-pic-container {
+    position: relative;
+    cursor: pointer;
+}
+
+.nav-profile-pic {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--accent-color);
+    transition: transform var(--transition-speed) ease,
+        box-shadow var(--transition-speed) ease;
+}
+
+.nav-profile-pic:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 15px rgba(255, 71, 84, 0.4);
+}
+
+/* --- Mobile Menu Toggle (Hamburger) --- */
+.mobile-toggle {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 30px;
+    height: 20px;
+    cursor: pointer;
+    z-index: 1100;
+    /* Above overlay */
+}
+
+.bar {
+    width: 100%;
+    height: 3px;
+    background-color: var(--text-main);
+    border-radius: 2px;
+    transition: all var(--transition-speed) ease;
+}
+
+/* Hamburger Animation */
+.mobile-toggle.open .bar:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 6px);
+}
+
+.mobile-toggle.open .bar:nth-child(2) {
+    opacity: 0;
+}
+
+.mobile-toggle.open .bar:nth-child(3) {
+    transform: rotate(-45deg) translate(5px, -6px);
+}
+
+/* --- Mobile Menu Drawer --- */
+.mobile-nav-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 1050;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity var(--transition-speed) ease;
+}
+
+.mobile-nav-overlay.open {
+    opacity: 1;
+    visibility: visible;
+}
+
+.mobile-nav-content {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 75%;
+    max-width: 300px;
+    height: 100vh;
+    background: var(--mobile-menu-bg);
+    padding: 100px 30px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    z-index: 1060;
+    transform: translateX(100%);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    /* Smooth ease-out */
+    box-shadow: -5px 0 20px rgba(0, 0, 0, 0.5);
+    border-left: 1px solid var(--nav-border);
+}
+
+.mobile-nav-content.open {
+    transform: translateX(0);
+}
+
+.mobile-nav-links {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.mobile-nav-link {
+    font-size: 1.2rem;
+    color: var(--text-main);
+    font-weight: 500;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    transition: color var(--transition-speed);
+}
+
+.mobile-nav-link:hover {
+    color: var(--accent-color);
+    padding-left: 10px;
+    /* Slide effect */
+}
+
+/* --- Dropdown (Admin) --- */
+.dropdown-container {
+    position: relative;
+}
+
+.dropdown-trigger {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 150%;
+    right: 0;
+    background: #1a1a1a;
+    border: 1px solid var(--nav-border);
+    border-radius: 8px;
+    padding: 10px 0;
+    min-width: 180px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: all var(--transition-speed) ease;
+    z-index: 1200;
+}
+
+.dropdown-container:hover .dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.dropdown-item {
+    display: block;
+    padding: 10px 20px;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+
+.dropdown-item:hover {
+    background: rgba(255, 71, 84, 0.1);
+    color: var(--accent-color);
+}
+
+/* --- Responsive Breakpoints --- */
+@media (max-width: 768px) {
+    .navbar-menu {
+        display: none;
+        /* Hidden on mobile, use drawer */
+    }
+
+    .mobile-toggle {
+        display: flex;
+    }
+}

@@ -94,16 +94,27 @@ const Concertmanagement = () => {
                         <td>{show.totalTickets}</td>
                         <td>{show.ticketsAvailable}</td>
                         <td>
-                          <button className="edit">
+                          <Link
+                            to={`/admin/edit/concerts/${show._id}`}
+                            className="edit"
+                          >
                             <i className="fa-solid fa-file-pen"></i>
-                          </button>
+                          </Link>
                         </td>
                         <td>
                           {" "}
                           <button
-                            type="submit"
+                            type="button"
                             className="delete"
-                            onclick="return confirm('Are you sure you want to delete this review?')"
+                            onClick={() => {
+                              if (
+                                window.confirm(
+                                  "Are you sure you want to delete this review?"
+                                )
+                              ) {
+                                // TODO: Implement delete logic
+                              }
+                            }}
                           >
                             <i className="fa-solid fa-trash"></i>
                           </button>

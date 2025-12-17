@@ -469,9 +469,9 @@ router.get("/get/artist/:id", authenticateJWT, isApiAdmin, async (req, res) => {
         band: artist.band,
         photo: photoData
           ? {
-              data: photoData,
-              contentType: artist.photo.contentType,
-            }
+            data: photoData,
+            contentType: artist.photo.contentType,
+          }
           : null,
       },
       bands,
@@ -610,6 +610,7 @@ router.get(
 
 router.post(
   "/edit/concerts/:id",
+  authenticateJWT,
   isApiAdmin,
   upload.single("photo"),
   async (req, res) => {
@@ -666,9 +667,8 @@ router.post(
       await ActivityLog.create({
         // <-- Make sure your model is named Activity here
         actionType: "concert_updated",
-        message: `Concert "${concert.title}" updated in band "${
-          bandDoc ? bandDoc.name : "Unknown"
-        }"`,
+        message: `Concert "${concert.title}" updated in band "${bandDoc ? bandDoc.name : "Unknown"
+          }"`,
         icon: "fa-calendar-xmark", // or "fa-calendar-plus" if you prefer
       });
 

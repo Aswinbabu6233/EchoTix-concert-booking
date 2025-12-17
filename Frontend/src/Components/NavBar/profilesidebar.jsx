@@ -20,9 +20,8 @@ const ProfileSidebar = () => {
   return (
     <div className={`ProfileSidebar ${display ? "expanded" : "collapsed"}`}>
       <i
-        className={`fa-solid ${
-          display ? "fa-angles-left" : "fa-angles-right"
-        } toggle`}
+        className={`fa-solid ${display ? "fa-angles-left" : "fa-angles-right"
+          } toggle`}
         onClick={toggleSidebar}
       ></i>
 

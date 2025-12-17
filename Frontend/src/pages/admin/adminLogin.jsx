@@ -49,7 +49,10 @@ const AdminLoginPage = () => {
       navigate("/admin/dashboard");
     } catch (error) {
       console.error(error);
-      setError("Admin login failed. Please check your credentials.");
+      const errorMessage =
+        error.response?.data?.message ||
+        "Admin login failed. Please check your credentials.";
+      setError(errorMessage);
       setloading(false);
     }
   };

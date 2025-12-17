@@ -102,7 +102,7 @@ const AdminDashboard = () => {
             <div className="recentactivity">
               <h2>Recent Activity</h2>
               {dashboardData.recentActivities &&
-              dashboardData.recentActivities ? (
+                dashboardData.recentActivities ? (
                 dashboardData.recentActivities.map((activity, index) => (
                   <div key={index} className="activity">
                     <span className="icon">
@@ -158,8 +158,8 @@ const AdminDashboard = () => {
                       <tr key={index}>
                         <td>
                           {show.profileImage &&
-                          show.profileImage.data &&
-                          show.profileImage.contentType ? (
+                            show.profileImage.data &&
+                            show.profileImage.contentType ? (
                             <img
                               src={
                                 show?.profileImage?.data &&
@@ -268,7 +268,7 @@ const AdminDashboard = () => {
               <h3>Recent Artists</h3>
               <span>View All</span>
             </div>
-            <div class="managementstable">
+            <div className="managementstable">
               <table>
                 <thead>
                   <tr>
@@ -280,7 +280,7 @@ const AdminDashboard = () => {
                 </thead>
                 <tbody>
                   {dashboardData.showartists.map((show, index) => (
-                    <tr>
+                    <tr key={index}>
                       <td>
                         <img
                           src={

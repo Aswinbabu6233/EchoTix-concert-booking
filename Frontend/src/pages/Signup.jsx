@@ -43,7 +43,23 @@ const Signup = () => {
       }
     } catch (err) {
       console.error("Registration error:", err);
-      setError("An error occurred during registration");
+      if (err.response && err.response.data) {
+        // Handle specific error message (e.g., "Email already exists")
+        if (err.response.data.message) {
+          setError(err.response.data.message);
+        }
+        // Handle validation errors array
+        else if (err.response.data.errors) {
+          const errorMessages = err.response.data.errors
+            .map((e) => e.msg)
+            .join(", ");
+          setError(errorMessages);
+        } else {
+          setError("Registration failed. Please Check your input.");
+        }
+      } else {
+        setError("An error occurred during registration. Please try again.");
+      }
     }
   };
 

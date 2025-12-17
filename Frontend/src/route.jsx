@@ -22,6 +22,7 @@ import Artistedit from "./pages/admin/artistedit";
 import Bandcreate from "./pages/admin/bandcreate";
 import Bandedit from "./pages/admin/bandedit";
 import Concertcreate from "./pages/admin/concertcreate";
+import Concertedit from "./pages/admin/concertedit";
 
 var Routerpath = createBrowserRouter([
   { path: "/", element: <Homepage /> },
@@ -48,6 +49,7 @@ var Routerpath = createBrowserRouter([
   { path: "/admin/create/band", element: <Bandcreate /> },
   { path: "/admin/edit/band/:id", element: <Bandedit /> },
   { path: "/admin/create/concerts", element: <Concertcreate /> },
+  { path: "/admin/edit/concerts/:id", element: <Concertedit /> },
 ]);
 
 export default Routerpath;

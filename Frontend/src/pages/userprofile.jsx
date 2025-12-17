@@ -40,7 +40,7 @@ const UserProfile = () => {
     } catch (error) {
       seterror(
         error.response?.data?.message ||
-          "something went wrong. Try again Later."
+        "something went wrong. Try again Later."
       );
     }
   };
