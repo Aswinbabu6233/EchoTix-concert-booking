@@ -87,6 +87,10 @@ const BookingPage = () => {
 
       const { order, razorpayKey } = checkoutResponse.data;
 
+      if (!razorpayKey) {
+        throw new Error("Razorpay Key not found");
+      }
+
       const options = {
         key: razorpayKey,
         amount: order.amount,
@@ -128,7 +132,15 @@ const BookingPage = () => {
         },
       };
 
+      if (!window.Razorpay) {
+        setError(["Razorpay SDK not loaded. Please refresh."]);
+        return;
+      }
+
       const rzp = new window.Razorpay(options);
+      rzp.on("payment.failed", function (response) {
+        setError([response.error.description || "Payment failed"]);
+      });
       rzp.open();
     } catch (err) {
       console.error("Payment initiation failed:", err);

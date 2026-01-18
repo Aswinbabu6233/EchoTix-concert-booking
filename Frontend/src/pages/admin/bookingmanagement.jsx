@@ -72,8 +72,8 @@ const Bookingmanagement = () => {
           {success && <FlashMessage type="success" message={success} />}
           {error && <FlashMessage type="error" message={error} />}
 
-          <section class="recentmanagements">
-            <div class="managementstable">
+          <section className="recentmanagements">
+            <div className="managementstable">
               <table>
                 <thead>
                   <tr>
@@ -102,13 +102,14 @@ const Bookingmanagement = () => {
                             <select
                               name="newStatus"
                               data-booking-id={booking._id}
+                              defaultValue=""
                               onChange={(e) => {
                                 if (e.target.value === "cancelled by admin") {
                                   cancelbooking(booking._id);
                                 }
                               }}
                             >
-                              <option selected disabled>
+                              <option value="" disabled>
                                 change status
                               </option>
                               <option value="cancelled by admin">
