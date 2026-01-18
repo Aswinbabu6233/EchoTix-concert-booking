@@ -8,4 +8,4 @@ node_modules/
 /public/images/
 
 # Ignore specific db file
-/database/db.js
+
