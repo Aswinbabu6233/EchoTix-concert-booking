@@ -5,6 +5,7 @@ import axios from "axios";
 import TicketCard from "../Components/ticketcard/ticketcard";
 import { useSelector } from "react-redux";
 import Loader from "../Components/Loading/loading";
+import BASE_API from "../config/baseapi";
 
 const UserTickets = () => {
   const { token } = useSelector((state) => state.user);
@@ -19,7 +20,7 @@ const UserTickets = () => {
   useEffect(() => {
     const fetchTickets = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/api/user/tickets", {
+        const res = await axios.get(`${BASE_API}/user/tickets`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
