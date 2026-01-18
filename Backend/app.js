@@ -26,7 +26,11 @@ var app = express();
 // CORS setup
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN || "http://localhost:5173",
+    origin: [
+      "http://localhost:5173",
+      "https://echo-tix-concert-booking.vercel.app",
+      process.env.CORS_ORIGIN,
+    ].filter(Boolean),
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
