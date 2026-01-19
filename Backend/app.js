@@ -23,16 +23,51 @@ require("dotenv").config();
 const expressLayouts = require("express-ejs-layouts");
 
 var app = express();
-// CORS setup
+
+// CORS setup - Enhanced configuration for production and development
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:3000",
+  "https://echo-tix-concert-booking.vercel.app",
+  process.env.CORS_ORIGIN,
+].filter(Boolean);
+
+// Handle preflight requests for all routes
+app.options("*", cors({
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps, curl, Postman)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      console.log("Blocked by CORS:", origin);
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept", "Origin"],
+  credentials: true,
+  maxAge: 86400, // Cache preflight response for 24 hours
+}));
+
 app.use(
   cors({
-    origin: [
-      "http://localhost:5173",
-      "https://echo-tix-concert-booking.vercel.app",
-      process.env.CORS_ORIGIN,
-    ].filter(Boolean),
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    origin: function (origin, callback) {
+      // Allow requests with no origin (like mobile apps, curl, Postman)
+      if (!origin) return callback(null, true);
+      
+      if (allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        console.log("Blocked by CORS:", origin);
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept", "Origin"],
     credentials: true,
+    maxAge: 86400, // Cache preflight response for 24 hours
   })
 );
 
