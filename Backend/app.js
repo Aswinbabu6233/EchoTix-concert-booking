@@ -25,7 +25,7 @@ const expressLayouts = require("express-ejs-layouts");
 
 var app = express();
 
-// CORS setup - Enhanced configuration for production and development
+// CORS setup - Standard Configuration
 const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:3000",
@@ -33,60 +33,19 @@ const allowedOrigins = [
   process.env.CORS_ORIGIN,
 ].filter(Boolean);
 
-// Manual CORS fallback for safety
-app.use((req, res, next) => {
-  const origin = req.headers.origin;
-  if (allowedOrigins.includes(origin)) {
-    res.setHeader('Access-Control-Allow-Origin', origin);
-  }
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin');
-  res.setHeader('Access-Control-Allow-Credentials', 'true');
-  
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
-  next();
-});
-
-// Handle preflight requests for all routes
-app.options("*", cors({
-  origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps, curl, Postman)
-    if (!origin) return callback(null, true);
-    
-    if (allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      console.log("Blocked by CORS:", origin);
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
+app.use(cors({
+  origin: allowedOrigins,
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept", "Origin"],
   credentials: true,
-  maxAge: 86400, // Cache preflight response for 24 hours
+  maxAge: 86400 // 24 hours
 }));
 
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      // Allow requests with no origin (like mobile apps, curl, Postman)
-      if (!origin) return callback(null, true);
-      
-      if (allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        console.log("Blocked by CORS:", origin);
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept", "Origin"],
-    credentials: true,
-    maxAge: 86400, // Cache preflight response for 24 hours
-  })
-);
+// Explicit preflight handling (optional but good for safety)
+app.options('*', cors({
+  origin: allowedOrigins,
+  credentials: true
+}));
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
@@ -95,11 +54,22 @@ app.set("view engine", "ejs");
 //layout setup
 
 // session setup
+const MongoStore = require("connect-mongo");
+
 app.use(
   session({
     secret: process.env.SESSION_SECRET || "BlueEyeTen",
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false, // Don't create sessions for anonymous requests (important for APIs)
+    store: MongoStore.create({
+      mongoUrl: process.env.MONGO_URI,
+      collectionName: "sessions",
+    }),
+    cookie: {
+      maxAge: 1000 * 60 * 60 * 24, // 1 day
+      secure: process.env.NODE_ENV === "production", // Secure cookies in production
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // Cross-site support if needed
+    }
   })
 );
 
