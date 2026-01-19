@@ -16,8 +16,8 @@ const ConcertCard = ({ concert }) => {
         <Link to={`/concert/${concert._id}`}>
           <h2>{concert.title}</h2>
         </Link>
-        <Link to={`/concert/band/${concert.band._id}`}>
-          <h6>{concert.bandName ? concert.bandName : "Unknown Band"}</h6>
+        <Link to={`/concert/band/${concert.band?._id}`}>
+          <h6>{concert.band?.name || "Unknown Band"}</h6>
         </Link>
         <p>
           Venue: <span>{concert.venue}</span>

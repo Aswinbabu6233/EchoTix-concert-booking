@@ -2,6 +2,8 @@ import { createBrowserRouter } from "react-router-dom";
 import Homepage from "./pages/homepage";
 import ConcertList from "./pages/concertlist";
 import ArtistList from "./pages/artistlist";
+import ArtistProfile from "./pages/artistprofile";
+import BandProfile from "./pages/bandprofile";
 import Loginpage from "./pages/Loginpage";
 import Signup from "./pages/Signup";
 import ConcertDetail from "./pages/concertdetail";
@@ -29,8 +31,11 @@ var Routerpath = createBrowserRouter([
   { path: "/", element: <Homepage /> },
   { path: "/concert/list", element: <ConcertList /> },
   { path: "/concert/:id", element: <ConcertDetail /> },
+  { path: "/concert/band/:id", element: <BandProfile /> },
   { path: "/artists/list", element: <ArtistList /> },
+  { path: "/artist/:id", element: <ArtistProfile /> },
   { path: "/user/login", element: <Loginpage /> },
+
   { path: "/user/register", element: <Signup /> },
   { path: "/user/profile", element: <UserProfile /> },
   { path: "/user/Ticket", element: <UserTickets /> },

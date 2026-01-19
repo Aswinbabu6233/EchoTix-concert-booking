@@ -1668,84 +1668,293 @@ iframe {
   transition: margin-left 0.3s ease;
 }
 
-/* Sidebar Styling */
+/* ==================== PROFILE SIDEBAR - PREMIUM DESIGN ==================== */
 .ProfileSidebar {
   position: absolute;
   top: 0;
   left: 0;
-  background-color: #101010;
+  background: linear-gradient(165deg, rgba(25, 25, 25, 0.98), rgba(15, 15, 15, 0.99));
+  backdrop-filter: blur(20px);
   color: #fff;
-  padding: 15px;
-  height: fit-content;
-  transition: width 0.3s ease;
+  padding: 20px;
+  height: auto;
+  min-height: 280px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
   border-radius: 20px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  z-index: 2;
+  z-index: 10;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.03) inset;
 }
 
-/* Expanded and Collapsed widths */
+.ProfileSidebar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #ff4754, #ff6b6b, #ff4754);
+  border-radius: 20px 20px 0 0;
+}
+
+/* Expanded and Collapsed States */
 .ProfileSidebar.expanded {
-  width: 200px;
+  width: 220px;
 }
 
 .ProfileSidebar.collapsed {
-  width: 60px;
+  width: 70px;
+  padding: 20px 15px;
 }
 
-/* Toggle icon */
+/* Toggle Button */
 .ProfileSidebar .toggle {
-  margin-left: auto;
-  margin-bottom: 20px;
+  align-self: flex-end;
+  margin-bottom: 25px;
   cursor: pointer;
-  font-size: 20px;
-  color: #fff;
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.5);
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.3s ease;
 }
 
-/* Sidebar Items */
+.ProfileSidebar .toggle:hover {
+  background: rgba(255, 71, 84, 0.15);
+  border-color: rgba(255, 71, 84, 0.3);
+  color: #ff4754;
+  transform: scale(1.05);
+}
+
+/* Sidebar Menu List */
 .sidebarul {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 8px;
   padding: 0;
+  margin: 0;
   width: 100%;
 }
 
 .sidebarul li {
   display: flex;
   align-items: center;
-  gap: 10px;
-  font-size: 15px;
+  gap: 14px;
+  font-size: 14px;
   cursor: pointer;
-  transition: background 0.3s;
-  padding: 8px 10px;
-  border-radius: 8px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: transparent;
+  border: 1px solid transparent;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.sidebarul li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(180deg, #ff4754, #ff6b6b);
+  border-radius: 0 3px 3px 0;
+  opacity: 0;
+  transform: scaleY(0);
+  transition: all 0.3s ease;
 }
 
 .sidebarul li:hover {
-  background-color: #333;
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+.sidebarul li:hover::before {
+  opacity: 1;
+  transform: scaleY(1);
+}
+
+.sidebarul li a {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  color: inherit;
+  text-decoration: none;
 }
 
 .sidebarul li i {
   font-size: 18px;
-  color: #fff;
+  color: rgba(255, 255, 255, 0.6);
+  min-width: 22px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.sidebarul li:hover i {
+  color: #ff4754;
+  transform: scale(1.1);
 }
 
 .sidebarul li span {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
   white-space: nowrap;
+  color: rgba(255, 255, 255, 0.85);
+  letter-spacing: 0.3px;
+  transition: color 0.3s ease;
+}
+
+.sidebarul li:hover span {
   color: #fff;
 }
 
-/* 🟨 Profile content should shift right based on sidebar */
+/* Active State - Add this class via JS when route matches */
+.sidebarul li.active {
+  background: linear-gradient(135deg, rgba(255, 71, 84, 0.15), rgba(255, 71, 84, 0.08));
+  border-color: rgba(255, 71, 84, 0.2);
+}
 
-/* When sidebar is collapsed */
+.sidebarul li.active::before {
+  opacity: 1;
+  transform: scaleY(1);
+}
+
+.sidebarul li.active i {
+  color: #ff4754;
+}
+
+.sidebarul li.active span {
+  color: #fff;
+}
+
+/* Logout Button Special Styling */
+.sidebarul li:last-child {
+  margin-top: 15px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding-top: 20px;
+}
+
+.sidebarul li:last-child:hover {
+  background: rgba(255, 71, 84, 0.1);
+  border-color: rgba(255, 71, 84, 0.2);
+}
+
+.sidebarul li:last-child:hover i {
+  color: #ff4754;
+}
+
+/* Collapsed State Adjustments */
+.ProfileSidebar.collapsed .sidebarul li {
+  justify-content: center;
+  padding: 14px 12px;
+}
+
+.ProfileSidebar.collapsed .sidebarul li i {
+  min-width: auto;
+  font-size: 20px;
+}
+
+.ProfileSidebar.collapsed .toggle {
+  align-self: center;
+}
+
+/* Profile Card Shift */
 .ProfileSidebar.collapsed~.profile-card {
-  margin-left: 60px;
+  margin-left: 85px;
+}
+
+.ProfileSidebar.expanded~.profile-card {
+  margin-left: 240px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .ProfileSidebar {
+    position: fixed;
+    top: 70px;
+    left: 10px;
+    border-radius: 16px;
+  }
+
+  .ProfileSidebar.expanded {
+    width: 200px;
+  }
+
+  .ProfileSidebar.collapsed {
+    width: 60px;
+    padding: 15px 12px;
+  }
+}
+
+@media (max-width: 576px) {
+  .ProfileSidebar {
+    top: auto;
+    bottom: 10px;
+    left: 10px;
+    right: 10px;
+    width: auto !important;
+    flex-direction: row;
+    min-height: auto;
+    padding: 12px 15px;
+    border-radius: 14px;
+  }
+
+  .ProfileSidebar::before {
+    display: none;
+  }
+
+  .ProfileSidebar .toggle {
+    display: none;
+  }
+
+  .sidebarul {
+    flex-direction: row;
+    justify-content: space-around;
+    gap: 0;
+  }
+
+  .sidebarul li {
+    flex-direction: column;
+    gap: 6px;
+    padding: 10px 15px;
+    margin-top: 0 !important;
+    border-top: none !important;
+    padding-top: 10px !important;
+  }
+
+  .sidebarul li::before {
+    display: none;
+  }
+
+  .sidebarul li span {
+    font-size: 11px;
+    font-weight: 500;
+  }
+
+  .sidebarul li i {
+    font-size: 20px;
+  }
+
+  .ProfileSidebar.collapsed~.profile-card,
+  .ProfileSidebar.expanded~.profile-card {
+    margin-left: 0;
+    margin-bottom: 80px;
+  }
 }
 
 .profile-header {
