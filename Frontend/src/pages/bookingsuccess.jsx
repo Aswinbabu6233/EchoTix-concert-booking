@@ -1,4 +1,5 @@
 import { Link, useParams } from "react-router-dom";
+import { getConcertImageUrl } from "../utils/imageUtils";
 import Header from "../Components/NavBar/Navbar";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -120,13 +121,13 @@ const BookingSuccess = () => {
             <div className="ticket-div">
               <div className="concert-div">
                 <div className="concert-left">
-                  {booking.concert.concertImage &&
-                    booking.concert.concertImage.data && (
-                      <img
-                        src={`data:${booking.concert.concertImage.contentType};base64,${booking.concert.concertImage.data}`}
-                        alt="Concert Banner"
-                      />
-                    )}
+                  {booking.concert && (
+                    <img
+                      src={getConcertImageUrl(booking.concert._id)}
+                      alt="Concert Banner"
+                      loading="lazy"
+                    />
+                  )}
                 </div>
                 <div className="concert-right">
                   <h5>{booking.concert?.title}</h5>

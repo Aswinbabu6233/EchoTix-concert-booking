@@ -8,6 +8,7 @@ import { useEffect } from "react";
 import axios from "axios";
 import BASE_API from "../config/baseapi";
 import FlashMessage from "../Components/flash/flash";
+import { getUserImageUrl } from "../utils/imageUtils";
 
 const UserProfile = () => {
   const user = useSelector((state) => state.user);
@@ -62,12 +63,9 @@ const UserProfile = () => {
                 <div className="avatar-container">
                   <img
                     className="profile-avatar"
-                    src={
-                      userdetails?.profileImage?.data
-                        ? `data:${userdetails.profileImage.contentType};base64,${userdetails.profileImage.data}`
-                        : defaultimg
-                    }
+                    src={getUserImageUrl(userdetails.userId) || defaultimg}
                     alt="profile"
+                    onError={(e) => { e.target.src = defaultimg; }}
                   />
                   <div className="avatar-hover"></div>
                 </div>

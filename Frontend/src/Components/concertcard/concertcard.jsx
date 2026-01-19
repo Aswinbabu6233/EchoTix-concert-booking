@@ -1,15 +1,17 @@
 // src/Components/ConcertCard/ConcertCard.jsx
 import React from "react";
 import { Link } from "react-router-dom";
+import { getConcertImageUrl } from "../../utils/imageUtils";
 
 const ConcertCard = ({ concert }) => {
   return (
     <div className="concert-card" key={concert._id}>
       <Link to={`/concert/${concert._id}`}>
         <img
-          src={`data:${concert.concertImage.contentType};base64,${concert.concertImage.data}`}
+          src={getConcertImageUrl(concert._id)}
           alt={concert.title}
           className="concert-image"
+          loading="lazy"
         />
       </Link>
       <div className="concert-details">

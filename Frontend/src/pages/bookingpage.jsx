@@ -6,6 +6,7 @@ import BASE_API from "../config/baseapi";
 import { useSelector } from "react-redux";
 import Loader from "../Components/Loading/loading";
 import FlashMessage from "../Components/flash/flash";
+import { getConcertImageUrl } from "../utils/imageUtils";
 
 const BookingPage = () => {
   const user = useSelector((state) => state.user);
@@ -177,11 +178,12 @@ const BookingPage = () => {
 
           <section className="booking-details">
             <div className="concertleft">
-              {concert?.concertImage && (
+              {concert && (
                 <div className="concertimage">
                   <img
-                    src={`data:${concert.concertImage.contentType};base64,${concert.concertImage.data}`}
+                    src={getConcertImageUrl(concert._id)}
                     alt="Concert Banner"
+                    loading="lazy"
                   />
                 </div>
               )}

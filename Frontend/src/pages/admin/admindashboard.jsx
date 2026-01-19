@@ -7,6 +7,7 @@ import Loader from "../../Components/Loading/loading";
 import FlashMessage from "../../Components/flash/flash";
 import { Link } from "react-router-dom";
 import defaultimage from "../../assets/default-profile.jpg";
+import { getArtistImageUrl, getBandImageUrl, getConcertImageUrl, getUserImageUrl } from "../../utils/imageUtils";
 
 const AdminDashboard = () => {
   const user = useSelector((state) => state.user);
@@ -157,19 +158,11 @@ const AdminDashboard = () => {
                     dashboardData.showusers.map((show, index) => (
                       <tr key={index}>
                         <td>
-                          {show.profileImage &&
-                            show.profileImage.data &&
-                            show.profileImage.contentType ? (
                             <img
-                              src={
-                                show?.profileImage?.data &&
-                                `data:${show.profileImage.contentType};base64,${show.profileImage.data}`
-                              }
+                              src={getUserImageUrl(show._id) || defaultimage}
                               alt="User profile"
+                              onError={(e) => { e.target.src = defaultimage; }}
                             />
-                          ) : (
-                            <img src={defaultimage} alt="" />
-                          )}
                         </td>
                         <td>{show.username}</td>
                         <td>{show.email}</td>
@@ -204,10 +197,9 @@ const AdminDashboard = () => {
                       <tr key={index}>
                         <td>
                           <img
-                            src={
-                              show?.concertImage?.data &&
-                              `data:${show.concertImage.contentType};base64,${show.concertImage.data}`
-                            }
+                            src={getConcertImageUrl(show._id)}
+                            alt={show.title}
+                            loading="lazy"
                           />
                         </td>
                         <td>{show.title}</td>
@@ -248,10 +240,9 @@ const AdminDashboard = () => {
                     <tr key={index}>
                       <td>
                         <img
-                          src={
-                            show?.image?.data &&
-                            `data:${show.image.contentType};base64,${show.image.data}`
-                          }
+                          src={getBandImageUrl(show._id)}
+                          alt={show.name}
+                          loading="lazy"
                         />
                       </td>
                       <td>{show.name}</td>
@@ -283,10 +274,9 @@ const AdminDashboard = () => {
                     <tr key={index}>
                       <td>
                         <img
-                          src={
-                            show?.photo?.data &&
-                            `data:${show.photo.contentType};base64,${show.photo.data}`
-                          }
+                          src={getArtistImageUrl(show._id)}
+                          alt={show.name}
+                          loading="lazy"
                         />
                       </td>
                       <td>{show.name}</td>

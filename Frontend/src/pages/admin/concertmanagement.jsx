@@ -6,6 +6,7 @@ import Loader from "../../Components/Loading/loading";
 import FlashMessage from "../../Components/flash/flash";
 import axios from "axios";
 import BASE_API from "../../config/baseapi";
+import { getConcertImageUrl } from "../../utils/imageUtils";
 
 const Concertmanagement = () => {
   const user = useSelector((state) => state.user);
@@ -73,10 +74,9 @@ const Concertmanagement = () => {
                       <tr key={index}>
                         <td>
                           <img
-                            src={
-                              show?.concertImage?.data &&
-                              `data:${show.concertImage.contentType};base64,${show.concertImage.data}`
-                            }
+                            src={getConcertImageUrl(show._id)}
+                            alt={show.title}
+                            loading="lazy"
                           />
                         </td>
                         <td>{show.title}</td>

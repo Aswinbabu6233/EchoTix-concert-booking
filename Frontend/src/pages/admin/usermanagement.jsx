@@ -7,6 +7,7 @@ import BASE_API from "../../config/baseapi";
 import Loader from "../../Components/Loading/loading";
 import defaultimage from "../../assets/default-profile.jpg";
 import FlashMessage from "../../Components/flash/flash";
+import { getUserImageUrl } from "../../utils/imageUtils";
 
 const Usermanagement = () => {
   const user = useSelector((state) => state.user);
@@ -64,19 +65,11 @@ const Usermanagement = () => {
                     artistData.users.map((show, index) => (
                       <tr key={index}>
                         <td>
-                          {show.profileImage &&
-                          show.profileImage.data &&
-                          show.profileImage.contentType ? (
                             <img
-                              src={
-                                show?.profileImage?.data &&
-                                `data:${show.profileImage.contentType};base64,${show.profileImage.data}`
-                              }
+                              src={getUserImageUrl(show._id) || defaultimage}
                               alt="User profile"
+                              onError={(e) => { e.target.src = defaultimage; }}
                             />
-                          ) : (
-                            <img src={defaultimage} alt="" />
-                          )}
                         </td>
                         <td>{show.username}</td>
                         <td>{show.email}</td>

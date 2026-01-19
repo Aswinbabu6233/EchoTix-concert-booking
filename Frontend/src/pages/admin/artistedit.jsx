@@ -6,6 +6,7 @@ import axios from "axios";
 import BASE_API from "../../config/baseapi";
 import FlashMessage from "../../Components/flash/flash";
 import { useNavigate, useParams } from "react-router-dom";
+import { getArtistImageUrl } from "../../utils/imageUtils";
 
 const Artistedit = () => {
   const navigate = useNavigate();
@@ -95,14 +96,11 @@ const Artistedit = () => {
               {/* Current Photo */}
               <label htmlFor="CurrentPhoto">Current Photo</label>
               <div className="photo-box">
-                {artistData.artist?.photo?.data ? (
-                  <img
-                    src={`data:${artistData.artist.photo.contentType};base64,${artistData.artist.photo.data}`}
-                    alt="artist img"
-                  />
-                ) : (
-                  <em>No Image stored.</em>
-                )}
+                <img
+                  src={getArtistImageUrl(artistData.artist._id)}
+                  alt="artist img"
+                  onError={(e) => { e.target.style.display = "none"; }}
+                />
               </div>
 
               {/* Name */}

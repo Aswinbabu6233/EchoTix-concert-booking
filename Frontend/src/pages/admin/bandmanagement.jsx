@@ -6,6 +6,7 @@ import axios from "axios";
 import BASE_API from "../../config/baseapi";
 import { useSelector } from "react-redux";
 import Loader from "../../Components/Loading/loading";
+import { getBandImageUrl } from "../../utils/imageUtils";
 
 const Bandmanagement = () => {
   const user = useSelector((state) => state.user);
@@ -90,10 +91,9 @@ const Bandmanagement = () => {
                     <tr key={index}>
                       <td>
                         <img
-                          src={
-                            show?.image?.data &&
-                            `data:${show.image.contentType};base64,${show.image.data}`
-                          }
+                          src={getBandImageUrl(show._id)}
+                          alt={show.name}
+                          loading="lazy"
                         />
                       </td>
                       <td>{show.name}</td>

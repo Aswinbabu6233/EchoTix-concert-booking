@@ -4,6 +4,7 @@ import axios from "axios";
 import BASE_API from "../../config/baseapi";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { getBandImageUrl } from "../../utils/imageUtils";
 import Loader from "../../Components/Loading/loading";
 import FlashMessage from "../../Components/flash/flash";
 
@@ -106,14 +107,11 @@ const Bandedit = () => {
             >
               <label>Current Photo</label>
               <div className="photo-box">
-                {banddata?.band?.image?.data ? (
-                  <img
-                    src={`data:${banddata.band.image.contentType};base64,${banddata.band.image.data}`}
-                    alt="Current Band"
-                  />
-                ) : (
-                  <em>No image available.</em>
-                )}
+                <img
+                  src={getBandImageUrl(banddata.band._id)}
+                  alt="Current Band"
+                  onError={(e) => { e.target.style.display = "none"; }}
+                />
               </div>
 
               <label>Name</label>

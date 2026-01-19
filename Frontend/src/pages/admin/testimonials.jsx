@@ -6,6 +6,7 @@ import axios from "axios";
 import defaultimage from "../../assets/default-profile.jpg";
 import { useSelector } from "react-redux";
 import Loader from "../../Components/Loading/loading";
+import { getUserImageUrl } from "../../utils/imageUtils";
 
 const ApproveTestimonials = () => {
   const [error, setError] = useState("");
@@ -62,28 +63,16 @@ const ApproveTestimonials = () => {
                   {testimonials.testimonials?.map((show, index) => (
                     <tr key={index}>
                       <td>
-                        {show.user?.profileImage?.data &&
-                        show.user?.profileImage?.contentType ? (
                           <img
-                            src={`data:${show.user.profileImage.contentType};base64,${show.user.profileImage.data}`}
+                            src={getUserImageUrl(show.user._id) || defaultimage}
                             alt="User profile"
                             style={{
                               width: "50px",
                               height: "50px",
                               borderRadius: "50%",
                             }}
+                            onError={(e) => { e.target.src = defaultimage; }}
                           />
-                        ) : (
-                          <img
-                            src={defaultimage}
-                            alt="Default profile"
-                            style={{
-                              width: "50px",
-                              height: "50px",
-                              borderRadius: "50%",
-                            }}
-                          />
-                        )}
                       </td>
                       <td>{show.user?.username || "Unknown user"}</td>
                       <td>

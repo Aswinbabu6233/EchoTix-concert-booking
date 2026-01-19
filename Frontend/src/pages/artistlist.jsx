@@ -4,6 +4,7 @@ import axios from "axios";
 import Loader from "../Components/Loading/loading";
 import { Link } from "react-router-dom";
 import BASE_API from "../config/baseapi";
+import { getArtistImageUrl } from "../utils/imageUtils";
 
 const ArtistList = () => {
   const [artists, setArtists] = useState([]);
@@ -46,7 +47,7 @@ const ArtistList = () => {
                   <div className="artistlist-card">
                     <div className="artists-image">
                       <img
-                        src={`data:${artist.photo.contentType};base64,${artist.photo.data}`}
+                        src={getArtistImageUrl(artist._id)}
                         alt="artist"
                         loading="lazy"
                       />

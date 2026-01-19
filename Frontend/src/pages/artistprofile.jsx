@@ -5,6 +5,7 @@ import axios from "axios";
 import BASE_API from "../config/baseapi";
 import Loader from "../Components/Loading/loading";
 import "../styles/artistprofile.css";
+import { getArtistImageUrl, getBandImageUrl, getConcertImageUrl } from "../utils/imageUtils";
 
 const ArtistProfile = () => {
     const { id } = useParams();
@@ -75,12 +76,10 @@ const ArtistProfile = () => {
                             <div className="artist-hero-image-container">
                                 <div className="artist-hero-image-glow"></div>
                                 <img
-                                    src={
-                                        artist?.photo?.data &&
-                                        `data:${artist.photo.contentType};base64,${artist.photo.data}`
-                                    }
+                                    src={getArtistImageUrl(artist._id)}
                                     alt={artist.name}
                                     className="artist-hero-image"
+                                    loading="lazy"
                                 />
                             </div>
                         </div>
@@ -98,12 +97,10 @@ const ArtistProfile = () => {
                             <div className="band-info-card">
                                 <div className="band-image-wrapper">
                                     <img
-                                        src={
-                                            artist.band?.image?.data &&
-                                            `data:${artist.band.image.contentType};base64,${artist.band.image.data}`
-                                        }
+                                        src={getBandImageUrl(artist.band._id)}
                                         alt={artist.band.name}
                                         className="band-showcase-image"
+                                        loading="lazy"
                                     />
                                     <div className="band-image-overlay">
                                         <Link
@@ -140,12 +137,10 @@ const ArtistProfile = () => {
                                     >
                                         <div className="member-image-container">
                                             <img
-                                                src={
-                                                    member?.photo?.data &&
-                                                    `data:${member.photo.contentType};base64,${member.photo.data}`
-                                                }
+                                                src={getArtistImageUrl(member._id)}
                                                 alt={member.name}
                                                 className="member-image"
+                                                loading="lazy"
                                             />
                                             <div className="member-overlay">
                                                 <span>View Profile</span>
@@ -183,11 +178,9 @@ const ArtistProfile = () => {
                                         <div className="concert-timeline-card">
                                             <div className="concert-timeline-image">
                                                 <img
-                                                    src={
-                                                        concert?.concertImage?.data &&
-                                                        `data:${concert.concertImage.contentType};base64,${concert.concertImage.data}`
-                                                    }
+                                                    src={getConcertImageUrl(concert._id)}
                                                     alt={concert.title}
+                                                    loading="lazy"
                                                 />
                                                 <span
                                                     className={`concert-status-badge ${concert.status}`}

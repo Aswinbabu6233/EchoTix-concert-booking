@@ -6,6 +6,7 @@ import Loader from "../../Components/Loading/loading";
 import BASE_API from "../../config/baseapi";
 import axios from "axios";
 import FlashMessage from "../../Components/flash/flash";
+import { getArtistImageUrl } from "../../utils/imageUtils";
 
 const Artistmanagement = () => {
   const user = useSelector((state) => state.user);
@@ -92,10 +93,9 @@ const Artistmanagement = () => {
                     <tr key={index}>
                       <td>
                         <img
-                          src={
-                            show?.photo?.data &&
-                            `data:${show.photo.contentType};base64,${show.photo.data}`
-                          }
+                          src={getArtistImageUrl(show._id)}
+                          alt={show.name}
+                          loading="lazy"
                         />
                       </td>
                       <td>{show.name}</td>

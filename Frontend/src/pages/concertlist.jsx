@@ -4,6 +4,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import Loader from "../Components/Loading/loading";
 import Header from "../Components/NavBar/Navbar";
 import BASE_API from "../config/baseapi";
+import { getConcertImageUrl } from "../utils/imageUtils";
 
 const ConcertList = () => {
   const [concerts, setConcerts] = useState([]);
@@ -124,7 +125,7 @@ const ConcertList = () => {
                 <div className="concert-card" key={concert._id}>
                   <Link to={`/concert/${concert._id}`}>
                     <img
-                      src={`data:${concert.concertImage.contentType};base64,${concert.concertImage.data}`}
+                      src={getConcertImageUrl(concert._id)}
                       alt="concert"
                       loading="lazy"
                     />

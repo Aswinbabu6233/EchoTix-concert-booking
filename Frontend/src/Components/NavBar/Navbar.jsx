@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import "./Navbar.css";
+import { getUserImageUrl } from "../../utils/imageUtils";
 
 const Header = ({ hidenav }) => {
   const user = useSelector((state) => state.user);
@@ -116,12 +117,9 @@ const Header = ({ hidenav }) => {
                   <Link to="/user/profile" className="profile-pic-container">
                     <img
                       className="nav-profile-pic"
-                      src={
-                        userdetails?.profileImage?.data
-                          ? `data:${userdetails.profileImage.contentType};base64,${userdetails.profileImage.data}`
-                          : "/images/default-profile.jpg"
-                      }
+                      src={getUserImageUrl(userdetails?.userId) || "/images/default-profile.jpg"}
                       alt="profile"
+                      onError={(e) => { e.target.src = "/images/default-profile.jpg"; }}
                     />
                   </Link>
                 ) : (

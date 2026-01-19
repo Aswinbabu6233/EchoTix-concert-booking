@@ -13,6 +13,7 @@ var userRouter = require("./routes/user");
 var apiuserRouter = require("./routes/Api/user");
 var apiadminRouter = require("./routes/Api/admin");
 var apiindexRouter = require("./routes/Api/index");
+var apiimagesRouter = require("./routes/Api/images");
 const session = require("express-session");
 const flash = require("connect-flash");
 
@@ -140,6 +141,7 @@ app.use("/user", userRouter);
 app.use("/api/user", apiuserRouter);
 app.use("/api/admin", apiadminRouter);
 app.use("/api", apiindexRouter);
+app.use("/api/images", apiimagesRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -148,12 +150,22 @@ app.use(function (req, res, next) {
 
 // error handler
 app.use(function (err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get("env") === "development" ? err : {};
+  const statusCode = err.status || 500;
+  const isDev = req.app.get("env") === "development";
 
-  // render the error page
-  res.status(err.status || 500);
+  // For API routes, return JSON instead of rendering HTML
+  if (req.originalUrl.startsWith("/api")) {
+    return res.status(statusCode).json({
+      success: false,
+      message: err.message || "Internal Server Error",
+      ...(isDev && { stack: err.stack }),
+    });
+  }
+
+  // For non-API routes, render the error page
+  res.locals.message = err.message;
+  res.locals.error = isDev ? err : {};
+  res.status(statusCode);
   res.render("error");
 });
 

@@ -2,6 +2,7 @@ import axios from "axios";
 import React from "react";
 import BASE_API from "../../config/baseapi";
 import { useSelector } from "react-redux";
+import { getConcertImageUrl } from "../../utils/imageUtils";
 
 const TicketCard = ({ ticket }) => {
   const { token } = useSelector((state) => state.user);
@@ -47,8 +48,9 @@ const TicketCard = ({ ticket }) => {
         <div className="concert-div">
           <div className="concert-left">
             <img
-              src={`data:${concert.concertImage.contentType};base64,${concert.concertImage.data}`}
+              src={getConcertImageUrl(concert._id)}
               alt="Concert Banner"
+              loading="lazy"
             />
           </div>
           <div className="concert-right">

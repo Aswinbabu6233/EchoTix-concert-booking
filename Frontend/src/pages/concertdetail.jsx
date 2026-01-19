@@ -6,6 +6,7 @@ import BASE_API from "../config/baseapi";
 import { useSelector } from "react-redux";
 import Loader from "../Components/Loading/loading";
 import defaultImg from "../assets/default-profile.jpg";
+import { getConcertImageUrl, getArtistImageUrl, getUserImageUrl } from "../utils/imageUtils";
 
 const ConcertDetail = () => {
   const user = useSelector((state) => state.user);
@@ -95,11 +96,9 @@ const ConcertDetail = () => {
             <h1>{concertdata.title}</h1>
             <img
               className="concert-banner"
-              src={
-                concertdata?.concertImage?.data &&
-                `data:${concertdata.concertImage.contentType};base64,${concertdata.concertImage.data}`
-              }
+              src={getConcertImageUrl(concertdata._id)}
               alt={concertdata.title}
+              loading="lazy"
             />
             <p className="subtitle">
               Experience the thrill of live music with
@@ -127,12 +126,10 @@ const ConcertDetail = () => {
                   <div className="artistlist" key={artist._id}>
                     <div className="artist">
                       <Link to={`/artist/${artist._id}`}>
-                        <img
-                          src={
-                            artist?.photo?.data &&
-                            `data:${artist.photo.contentType};base64,${artist.photo.data}`
-                          }
+                      <img
+                          src={getArtistImageUrl(artist._id)}
                           alt={artist.name}
+                          loading="lazy"
                         />
                         <h4>{artist.name}</h4>
                         <p>{artist.role}</p>
@@ -310,12 +307,9 @@ const ConcertDetail = () => {
                         <div className="review-user">
                           <img
                             className="profile-pic"
-                            src={
-                              review?.user.profileImage?.data
-                                ? `data:${review.user.profileImage.contentType};base64,${review.user.profileImage.data}`
-                                : defaultImg
-                            }
+                            src={getUserImageUrl(review.user._id) || defaultImg}
                             alt="profile"
+                            onError={(e) => { e.target.src = defaultImg; }}
                           />
                           <strong>{review.user.username}</strong>
                         </div>

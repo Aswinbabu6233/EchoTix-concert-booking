@@ -5,6 +5,7 @@ import axios from "axios";
 import BASE_API from "../config/baseapi";
 import Loader from "../Components/Loading/loading";
 import "../styles/bandprofile.css";
+import { getBandImageUrl, getArtistImageUrl, getConcertImageUrl } from "../utils/imageUtils";
 
 const BandProfile = () => {
     const { id } = useParams();
@@ -61,12 +62,10 @@ const BandProfile = () => {
                     <section className="band-hero-section">
                         <div className="band-hero-background">
                             <img
-                                src={
-                                    band?.image?.data &&
-                                    `data:${band.image.contentType};base64,${band.image.data}`
-                                }
+                                src={getBandImageUrl(band._id)}
                                 alt={band.name}
                                 className="band-hero-bg-image"
+                                loading="lazy"
                             />
                             <div className="band-hero-overlay"></div>
                         </div>
@@ -113,11 +112,9 @@ const BandProfile = () => {
                                     >
                                         <div className="artist-card-image">
                                             <img
-                                                src={
-                                                    artist?.photo?.data &&
-                                                    `data:${artist.photo.contentType};base64,${artist.photo.data}`
-                                                }
+                                                src={getArtistImageUrl(artist._id)}
                                                 alt={artist.name}
+                                                loading="lazy"
                                             />
                                             <div className="artist-card-overlay">
                                                 <span className="view-profile">
@@ -162,11 +159,9 @@ const BandProfile = () => {
                                     >
                                         <div className="concert-card-image">
                                             <img
-                                                src={
-                                                    concert?.concertImage?.data &&
-                                                    `data:${concert.concertImage.contentType};base64,${concert.concertImage.data}`
-                                                }
+                                                src={getConcertImageUrl(concert._id)}
                                                 alt={concert.title}
+                                                loading="lazy"
                                             />
                                             <span className={`status-badge ${concert.status}`}>
                                                 {concert.status === "upcoming" ? "Upcoming" : "Past"}

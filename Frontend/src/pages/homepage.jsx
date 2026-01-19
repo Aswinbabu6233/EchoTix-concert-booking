@@ -7,6 +7,7 @@ import defaultimg from "../assets/default-profile.jpg";
 import Loader from "../Components/Loading/loading";
 import ConcertCard from "../Components/concertcard/concertcard";
 import BASE_API from "../config/baseapi";
+import { getArtistImageUrl, getUserImageUrl } from "../utils/imageUtils";
 const Homepage = () => {
   const [concerts, setConcerts] = useState([]);
   const [artists, setArtists] = useState([]);
@@ -121,7 +122,7 @@ const Homepage = () => {
                   >
                     <Link to={`/artist/${artist._id}`}>
                       <img
-                        src={`data:${artist.photo.contentType};base64,${artist.photo.data}`}
+                        src={getArtistImageUrl(artist._id)}
                         alt="artist"
                         loading="lazy"
                       />
@@ -151,21 +152,12 @@ const Homepage = () => {
                           : testimonial.content}
                       </h4>
                       <div className="user">
-                        {testimonial.user.profileImage &&
-                        testimonial.user.profileImage.data &&
-                        testimonial.user.profileImage.contentType ? (
-                          <img
-                            src={`data:${testimonial.user.profileImage.contentType};base64,${testimonial.user.profileImage.data}`}
-                            alt="User"
-                            loading="lazy"
-                          />
-                        ) : (
-                          <img
-                            className="profile-avatar"
-                            src={defaultimg}
-                            alt="default img"
-                          />
-                        )}
+                        <img
+                          src={getUserImageUrl(testimonial.user._id) || defaultimg}
+                          alt="User"
+                          loading="lazy"
+                          onError={(e) => { e.target.src = defaultimg; }}
+                        />
                         <p>
                           {testimonial.user.name}
                           <span>
